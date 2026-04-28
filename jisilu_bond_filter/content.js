@@ -1,11 +1,22 @@
 (function() {
-  var STORAGE_KEY = 'jisilu_bond_filter_hidden';
+  var STORAGE_KEY_HIDDEN = 'jisilu_bond_filter_hidden';
+  var STORAGE_KEY_SHOW = 'jisilu_bond_filter_show';
   var BOND_NM_COLUMN = 1;
   var isRunning = true;
 
   function getHiddenBonds() {
     try {
-      var stored = localStorage.getItem(STORAGE_KEY);
+      var stored = localStorage.getItem(STORAGE_KEY_HIDDEN);
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch(e) {}
+    return [];
+  }
+
+  function getShowBonds() {
+    try {
+      var stored = localStorage.getItem(STORAGE_KEY_SHOW);
       if (stored) {
         return JSON.parse(stored);
       }
@@ -15,7 +26,13 @@
 
   function saveHiddenBonds(bondIds) {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(bondIds));
+      localStorage.setItem(STORAGE_KEY_HIDDEN, JSON.stringify(bondIds));
+    } catch(e) {}
+  }
+
+  function saveShowBonds(bondIds) {
+    try {
+      localStorage.setItem(STORAGE_KEY_SHOW, JSON.stringify(bondIds));
     } catch(e) {}
   }
 
@@ -24,8 +41,9 @@
     
     try {
       var hiddenIds = getHiddenBonds();
+      var showIds = getShowBonds();
       var table = document.querySelector('#flex_cb');
-      if (!table || hiddenIds.length === 0) return;
+      if (!table) return;
 
       var allRows = table.querySelectorAll('tbody tr');
 
@@ -35,59 +53,98 @@
         if (!cells[BOND_NM_COLUMN]) continue;
         
         var bondNmCell = cells[BOND_NM_COLUMN];
-        var bondLink = bondNmCell.querySelector('a');
-        var bondId;
+        var bondId = getBondName(bondNmCell);
         
-        if (bondLink) {
-          bondId = bondLink.textContent.trim();
-        } else {
-          // Get text content but exclude the "!" spans
-          var tempDiv = document.createElement('div');
-          tempDiv.innerHTML = bondNmCell.innerHTML;
-          var spans = tempDiv.querySelectorAll('span');
-          for (var s = 0; s < spans.length; s++) {
-            if (spans[s].textContent.trim() === '!') {
-              spans[s].remove();
-            }
+        if (!bondId) continue;
+        
+        // If we have showIds (不强赎过滤), only show those
+        if (showIds.length > 0) {
+          if (showIds.indexOf(bondId) === -1) {
+            row.style.display = 'none';
+          } else {
+            row.style.display = '';
           }
-          bondId = tempDiv.textContent.trim();
-        }
-        
-        if (bondId && hiddenIds.indexOf(bondId) !== -1) {
-          row.style.display = 'none';
+        } else if (hiddenIds.length > 0) {
+          if (hiddenIds.indexOf(bondId) !== -1) {
+            row.style.display = 'none';
+          }
         }
       }
     } catch(e) {}
   }
 
-  function createFilterButton() {
-    var existingBtn = document.querySelector('#jisilu-filter-btn');
-    if (existingBtn) return;
+  function getBondName(bondNmCell) {
+    var bondLink = bondNmCell.querySelector('a');
+    if (bondLink) {
+      return bondLink.textContent.trim();
+    }
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = bondNmCell.innerHTML;
+    var spans = tempDiv.querySelectorAll('span');
+    for (var s = 0; s < spans.length; s++) {
+      if (spans[s].textContent.trim() === '!') {
+        spans[s].remove();
+      }
+    }
+    return tempDiv.textContent.trim();
+  }
 
-    var btn = document.createElement('button');
-    btn.id = 'jisilu-filter-btn';
-    btn.textContent = '过滤警示转债';
-    btn.style.cssText = 'margin-left: 20px; padding: 4px 12px; background-color: #d9534f; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;';
-    btn.onclick = function() {
-      hideMatchingRows();
-      btn.textContent = '已过滤';
-      btn.style.backgroundColor = '#5cb85c';
-    };
+  function createFilterButtons() {
+    var existingBtn1 = document.querySelector('#jisilu-filter-btn');
+    if (!existingBtn1) {
+      var btn1 = document.createElement('button');
+      btn1.id = 'jisilu-filter-btn';
+      btn1.textContent = '过滤警示转债';
+      btn1.style.cssText = 'margin-left: 20px; padding: 4px 12px; background-color: #d9534f; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;';
+      btn1.onclick = function() {
+        hideWarningBonds();
+        document.getElementById('jisilu-nobuy-btn').textContent = '不强赎';
+        document.getElementById('jisilu-nobuy-btn').style.backgroundColor = '#d9534f';
+        btn1.textContent = '已过滤';
+        btn1.style.backgroundColor = '#5cb85c';
+      };
 
-    var container = document.querySelector('#topic_cb .clearfix .pull-left');
-    if (container) {
-      var span = document.createElement('span');
-      span.style.marginLeft = '25px';
-      span.appendChild(btn);
-      container.appendChild(span);
+      var container = document.querySelector('#topic_cb .clearfix .pull-left');
+      if (container) {
+        var span1 = document.createElement('span');
+        span1.style.marginLeft = '25px';
+        span1.appendChild(btn1);
+        container.appendChild(span1);
+      }
+    }
+
+    var existingBtn2 = document.querySelector('#jisilu-nobuy-btn');
+    if (!existingBtn2) {
+      var btn2 = document.createElement('button');
+      btn2.id = 'jisilu-nobuy-btn';
+      btn2.textContent = '不强赎';
+      btn2.style.cssText = 'margin-left: 10px; padding: 4px 12px; background-color: #d9534f; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;';
+      btn2.onclick = function() {
+        showNoRedeemBonds();
+        document.getElementById('jisilu-filter-btn').textContent = '过滤警示转债';
+        document.getElementById('jisilu-filter-btn').style.backgroundColor = '#d9534f';
+        btn2.textContent = '已筛选';
+        btn2.style.backgroundColor = '#5cb85c';
+      };
+
+      var container = document.querySelector('#topic_cb .clearfix .pull-left');
+      if (container) {
+        var span2 = document.createElement('span');
+        span2.style.marginLeft = '10px';
+        span2.appendChild(btn2);
+        container.appendChild(span2);
+      }
     }
   }
 
-  function hideMatchingRows() {
+  function hideWarningBonds() {
     try {
       var table = document.querySelector('#flex_cb');
       if (!table) return;
 
+      // Clear show filter
+      saveShowBonds([]);
+      
       var allRows = table.querySelectorAll('tbody tr');
       var warningBonds = [];
 
@@ -97,8 +154,6 @@
         if (!cells[BOND_NM_COLUMN]) continue;
         
         var bondNmCell = cells[BOND_NM_COLUMN];
-        
-        // Get all spans in the cell
         var spans = bondNmCell.querySelectorAll('span');
         
         for (var j = 0; j < spans.length; j++) {
@@ -106,28 +161,9 @@
           var style = span.getAttribute('style') || '';
           var text = span.textContent || '';
           
-          // Check if this span contains just "!" with red or orange color
           if (text.trim() === '!') {
             if (style.indexOf('color:red') !== -1 || style.indexOf('color:#FFA500') !== -1) {
-              // Get bond name - either from <a> tag or from text
-              var bondLink = bondNmCell.querySelector('a');
-              var bondId;
-              
-              if (bondLink) {
-                bondId = bondLink.textContent.trim();
-              } else {
-                // Clone the cell and remove the warning spans to get bond name
-                var tempDiv = document.createElement('div');
-                tempDiv.innerHTML = bondNmCell.innerHTML;
-                var warningSpans = tempDiv.querySelectorAll('span');
-                for (var s = 0; s < warningSpans.length; s++) {
-                  if (warningSpans[s].textContent.trim() === '!') {
-                    warningSpans[s].remove();
-                  }
-                }
-                bondId = tempDiv.textContent.trim();
-              }
-              
+              var bondId = getBondName(bondNmCell);
               if (bondId) {
                 warningBonds.push(bondId);
                 row.style.display = 'none';
@@ -141,9 +177,54 @@
       if (warningBonds.length > 0) {
         saveHiddenBonds(warningBonds);
       }
-    } catch(e) {
-      console.log('Error:', e);
-    }
+    } catch(e) {}
+  }
+
+  function showNoRedeemBonds() {
+    try {
+      var table = document.querySelector('#flex_cb');
+      if (!table) return;
+
+      // Clear hidden filter
+      saveHiddenBonds([]);
+      
+      var allRows = table.querySelectorAll('tbody tr');
+      var noRedeemBonds = [];
+
+      for (var i = 0; i < allRows.length; i++) {
+        var row = allRows[i];
+        var cells = row.querySelectorAll('td');
+        if (!cells[BOND_NM_COLUMN]) continue;
+        
+        var bondNmCell = cells[BOND_NM_COLUMN];
+        var spans = bondNmCell.querySelectorAll('span');
+        var isNoRedeem = false;
+        
+        for (var j = 0; j < spans.length; j++) {
+          var span = spans[j];
+          var style = span.getAttribute('style') || '';
+          var text = span.textContent || '';
+          
+          if (text.trim() === '!' && style.indexOf('color:#A9A9A9') !== -1) {
+            isNoRedeem = true;
+            break;
+          }
+        }
+        
+        if (isNoRedeem) {
+          var bondId = getBondName(bondNmCell);
+          if (bondId) {
+            noRedeemBonds.push(bondId);
+          }
+        } else {
+          row.style.display = 'none';
+        }
+      }
+
+      if (noRedeemBonds.length > 0) {
+        saveShowBonds(noRedeemBonds);
+      }
+    } catch(e) {}
   }
 
   function startObserver() {
@@ -157,7 +238,7 @@
       var table = document.querySelector('#flex_cb');
       if (table && table.querySelector('tbody tr')) {
         clearInterval(timer);
-        createFilterButton();
+        createFilterButtons();
         restoreHiddenRows();
         startObserver();
       }
