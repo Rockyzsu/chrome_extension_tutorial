@@ -8,7 +8,7 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://*.baidu.com/"],
+            "matches": ["*://*.baidu.com/","*://www.google.com/"],
             "js": ["js/cannot_touch_v2.js"]
         }
     ]

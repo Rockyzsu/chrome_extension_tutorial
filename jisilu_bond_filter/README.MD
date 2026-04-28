@@ -1,0 +1,2021 @@
+写一个google chrome的浏览器插件：
+页面专门针对页面：https://www.jisilu.cn/data/cbnew/#cb
+这个页面是一个table表格。
+它的源码如下：
+```html
+
+<!DOCTYPE html>
+<html><head>
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit" />
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+<meta http-equiv="X-UA-Compatible" content="Chrome=1,IE=edge" />
+<title>可转债数据 - 集思录</title>
+<meta name="keywords" content="集思录,理财,可转债,债券,公司债,国债,新股,封闭基金,封基,ETF,LOF" />
+<meta name="description" content="集思录，一个以数据为本的投资社区"  />
+<base href="https://www.jisilu.cn/" />
+
+<link href="https://www.jisilu.cn/static/js/tablesorter/themes/blue/style.css?v=20260110" rel="stylesheet" type="text/css" />
+<link href="https://www.jisilu.cn/static/css/default/bootstrap3/bootstrap.min.css?v=20260110" rel="stylesheet" type="text/css" />
+<link href="https://www.jisilu.cn/static/css/default/jisilu_framework.css?v=20260110" rel="stylesheet" type="text/css" />
+<link href="https://www.jisilu.cn/static/css/default/bootstrap3/bootstrap-datepicker3.min.css?v=20260110" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+var _B50798EEBA8E3D0D6A899BB65892E226='b304cccd695da687';
+var G_POST_HASH=_B50798EEBA8E3D0D6A899BB65892E226;
+var G_INDEX_SCRIPT = '';
+var G_SITE_NAME = '集思录';
+var G_BASE_URL = 'https://www.jisilu.cn';
+var G_STATIC_URL = 'https://www.jisilu.cn/static';
+var G_UPLOAD_URL = 'https://www.jisilu.cn/uploads';
+var G_USER_ID = 1098224;
+var G_USER_NAME = '自动化交易机器';
+var G_UPLOAD_ENABLE = 'Y';
+var G_QUICK_PUBLISH_HUMAN_VALID = '';
+var G_UNREAD_NOTIFICATION = 0;
+var G_NOTIFICATION_INTERVAL = 180000;
+var G_CAN_CREATE_TOPIC = '1';
+var G_USER_FORBIDDEN = 0;
+var G_IS_MEMBER = false;
+
+function loginPctDataFormatter(nameVal, row){
+    if(0 == G_USER_ID){
+        return '<a title="该数据需要登录查看" href="/login/">登录</a>';
+    }else{
+        var val = row[nameVal];
+        if('-' != val && '--' != val && null != val){
+            val += '%';
+        }
+        return val;
+    }
+}
+
+function loginDataFormatter(nameVal, row){
+    if(0 == G_USER_ID){
+        return '<a title="该数据需要登录查看" href="/login/">登录</a>';
+    }else{
+        return row[nameVal];
+    }
+}
+
+function memberPctDataFormatter(nameVal, row){
+    if(!G_IS_MEMBER){
+        if(('iopv_discount_rt' == nameVal && 'Y' == row['has_iopv']) || ('us_increase_rt' == nameVal && 'Y' == row['has_us_ref'])){
+            return '<a title="该数据需要会员权限" href="/setting/member_data/">会员</a>';
+        }
+        return row[nameVal];
+    }else{
+        var val = row[nameVal];
+        if('-' != val && '--' != val && null != val){
+            val += '%';
+        }
+        return val;
+    }
+}
+
+function memberDataFormatter(nameVal, row){
+    if(!G_IS_MEMBER){
+        if('iopv' == nameVal && 'Y' == row['has_iopv']){
+            return '<a title="该数据需要会员权限" href="/setting/member_data/">会员</a>';
+        }
+        return row[nameVal];
+    }else{
+        return row[nameVal];
+    }
+}
+
+var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?164fe01b1433a19b507595a43bf58262";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script src="https://www.jisilu.cn/static/js/jquery-3.4.1.min.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/jquery.form.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/jquery.browser.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/jquery.cookie.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/admin/js/jquery.autocomplete.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/bootstrap3/bootstrap3-typeahead.min.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/bootstrap3/bootstrap.min.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/tablesorter/tablesorter.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/hogan.min.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/jisilu_common.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/jisilu_hogan_template.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/app/data.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/simpleTableBuilder.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/bootstrap3/bootstrap-datepicker.js?v=20260309" type="text/javascript"></script>
+<script src="https://www.jisilu.cn/static/js/bootstrap3/bootstrap-datepicker.zh-CN.min.js?v=20260309" type="text/javascript"></script>
+<link href="/static/js/multiple-select.v1.5.2.min.css?v=20240827" rel="stylesheet">
+<link href="/static/js/select2.v4.0.13.min.css" rel="stylesheet">
+
+<script type="text/javascript">
+	UserDefaultSimpleTableConfig = {showIndexCol:false};
+	UserDefineFundBColumns = {
+		coupon_descr_s: true,
+		fundb_unit_capital_rasising_rt:false,
+	fundb_discount_rt2:false
+	};
+</script>
+
+<style type="text/css">
+#flex_pre.tablesorter tbody tr td{
+	vertical-align: middle;
+}
+.search_cnd_red{
+	color: red;
+}
+.convert_bond_note{
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	word-break:break-all;
+	overflow:hidden;
+}
+.data_content {
+	margin: auto;
+	padding-bottom: 40px;
+	padding-left:10px;
+	padding-right:10px;
+	max-width: 1900px;
+	min-width: 1400px;
+}
+@media (min-width: 768px){
+	#dataModal .modal-dialog {
+		max-width: 500px;
+		margin: 200px auto;
+	}
+
+}
+.data_type_nav {
+	display: flex;
+	flex-flow: row nowrap;
+	border-bottom: 1px solid #f1f1f1;
+	padding: 10px 0;
+	width: 100%;
+}
+.data_table_tabs{
+	padding-top: 10px;
+}
+.data_table_tabs form{
+	padding: 0 0 10px 0;
+	margin: 0;
+}
+.data_table_tabs .tip{
+	font-size: 12px;
+	line-height: 20px;
+	padding-bottom: 10px;
+}
+.topic_nav{
+	width: 650px;
+}
+.topic_nav .nav>li>a {
+	padding: 2px 10px;
+}
+.topic_nav .nav-pills>li.active>a, .topic_nav .nav-pills>li.active>a:focus, .topic_nav .nav-pills>li.active>a:hover{
+	background-color: #006798;
+}
+.data_index{
+	flex-grow: 1;
+	line-height: 24px;
+}
+.data_index .index_quote_info{
+	font-size:12px;
+	min-width: 800px;
+    width: 800px;
+}
+.goto_new {
+	flex-grow: 1;
+	width: 100px;
+	line-height: 24px;
+	padding-left: 20px;
+}
+.jsl_cb_notes{
+	cursor:pointer; float:right;margin-top:-5px;margin-right:-2px;width:10px;
+}
+#historySearch>span{
+    font-size: 13px;
+    vertical-align: middle;
+}
+#historySearch .input-xs {
+	height: 24px;
+	padding: 2px 5px;
+	font-size: 12px;
+	line-height: 1.5;
+	border-radius: 3px;
+}
+#historySearch .btn-xs{
+    padding: 2px 5px;
+    line-height: 18px;
+}
+#historySearch .input-group-btn {
+    line-height: 0;
+}
+#historySearch .input-group input {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+#convertBondSearchForm {
+
+}
+.datepicker table tr td.disabled, .datepicker table tr td.disabled:hover {
+    color: #FFF;
+    cursor: default;
+    background: 0px 0px;
+}
+.datepicker-dropdown {
+    z-index: 10000 !important;
+}
+.industry_level1 {
+	font-size: 12px;
+	line-height: 14px;
+    padding-left: 0em;
+}
+
+.industry_level2 {
+	font-size: 12px;
+	line-height: 14px;
+    padding-left: 1em;
+}
+
+.industry_level3 {
+	font-size: 12px;
+	line-height: 14px;
+    padding-left: 2em;
+}
+
+.select2-selection__rendered{
+    text-align: left;
+}
+</style>
+</head>
+<body>
+<div id="browser_suggest" class="browser_suggest" style="display: none;">您的浏览器不被支持，请尽快升级到最新版下列浏览器。
+    <a href="https://www.microsoft.com/zh-cn/edge" rel="noopener noreferrer" target="_blank"><img src="static/img/edge.png" /> Edge</a>
+    <a href="https://www.google.cn/chrome/" rel="noopener noreferrer" target="_blank"><img src="static/img/chrome.png" /> Chrome</a>
+    <a href="https://www.firefox.com.cn/" rel="noopener noreferrer" target="_blank"><img src="static/img/firefox.png" /> Firefox</a>
+</div>
+<div class="header_navbar_bg ">
+    <div class="header_navbar_content">
+        <div class="flex">
+            <div class="logo_box">
+                <div class="logo">
+                    <a href="" target="_blank"></a>
+                </div>
+            </div>
+            <div class="menu">
+                <ul>
+                    <li id="top_nav_menu_home" ><a href="/">首页</a></li>
+                    <li id="top_nav_menu_calendar" ><a href="/data/calendar/">投资日历</a></li>
+                    <li id="top_nav_menu_data" class="active"><a id="nav_data" href="/web/data/cb/">实时数据</a></li>
+                    <li id="top_nav_menu_forum"><a href="/explore/">社区-知识库</a></li>
+                </ul>
+            </div>
+            <div class="search_box">
+                                <form action="/search/all/" id="global_search_form" method="post" class="search">
+                    <div class="input-group input-group-sm">
+                        <input id="search_type" name="t" type="hidden" value="" />
+                        <input id="search_input" name="q" type="text" class="form-control" placeholder="搜索问题、话题或人" autocomplete="off" onkeydown="if(event.keyCode==13) return false;">
+                        <span class="input-group-btn"><button class="btn btn-default" type="button" onclick="$('#global_search_form').submit();"><span class="jisilu-icons">&#xe718;</span></button></span>
+                    </div>
+                </form>
+                            </div>
+            <div class="user_box">
+                                <div id="notification" class="notification">
+                    <div class="btn-group btn-group-xs" role="group" aria-label="...">
+                        <a id="notification_btn" tabindex="0" class="btn btn-default" href="/notifications/" role="button" data-toggle="popover"><span>通知</span><span id="notifications_unread" data-unread="0" class="badge font_10" style="display: none">0</span></a>
+                        <a id="index_btn" class="btn btn-default" href="/inbox/" role="button"><span>私信</span><span id="inbox_unread" class="badge font_10" style="display: none;"></span></a>
+                    </div>
+                </div>
+                <div class="user_icon dropdown">
+                    <a id="user_menu" href="/people/%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BA%A4%E6%98%93%E6%9C%BA%E5%99%A8">
+                        <span>自动化交易机器</span><img alt="自动化交易机器" src="https://www.jisilu.cn/uploads/avatar/001/09/82/24_avatar_mid.jpg?v=1624005514" />
+                    </a>
+                    <div class="popover-menu" style="display: none;">
+                        <div class="user_info">
+                            <div class="avatar"><img alt="自动化交易机器" src="https://www.jisilu.cn/uploads/avatar/001/09/82/24_avatar_mid.jpg?v=1624005514" /></div>
+                            <div class="name_info">
+                                <div class="font_16 bold">自动化交易机器</div>
+                                <div class="font_12 darkgray">关注<span class="jslblue bold">49</span>人 关注者<span class="jslblue bold">161</span>人</div>
+                            </div>
+                            <div class="coins"><span class="jisilu-icons">&#xe604;</span>19</div>
+                        </div>
+                        <div class="member_box">
+                            <div class="member_bar">
+                                <div class="font_14 jslblue bold">集思录会员</div>
+                                                                                                    <div><a href="/setting/member_data/" class="darkgray">特色数据、功能特权</a></div>
+                                    <div class="text_align_right"><a class="btn btn-xs btn-default" href="/setting/member/id-buy__url-L2RhdGEvY2JuZXcv__tips-" role="button">立即开通</a></div>
+                                                                
+                            </div>
+                        </div>
+                        <div class="menu_links">
+                            <ul>
+                                <li><a href="https://www.jisilu.cn/people/%E8%87%AA%E5%8A%A8%E5%8C%96%E4%BA%A4%E6%98%93%E6%9C%BA%E5%99%A8" tabindex="-1">个人主页</a></li>
+                                <li><a href="https://www.jisilu.cn/home/mine/#all" tabindex="-1">我的关注</a></li>
+                                <li><a href="https://www.jisilu.cn/favorite/" tabindex="-1">我的收藏</a></li>
+                                <li><a href="/publish/" tabindex="-1" class="btn btn-default btn-xs"><span class="jisilu-icons font_16">&#xe6ab;</span>发起讨论</a></li>
+                            </ul>
+                            <ul>
+                                <li><a href="https://www.jisilu.cn/setting/profile/" tabindex="-2">个人设置</a></li>
+                                <li><a href="https://www.jisilu.cn/setting/payment/" tabindex="-1">我的购买</a></li>
+                                <li><a href="https://www.jisilu.cn/setting/wallet/" tabindex="-1">我的金币</a></li>
+                                <li><a href="https://www.jisilu.cn/setting/blacklist/" tabindex="-1">黑名单</a></li>
+                            </ul>
+                        </div>
+                        <div class="bottom_links">
+                            <div class="divide"></div>
+                            <ul>
+                                <li><a href="https://www.jisilu.cn/logout/" tabindex="-2">退出</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="application/javascript">
+
+    var document_title = '';
+    var unreadCacheSecond = 125;
+    function check_notifications(force) {
+
+        if (G_USER_ID == 0) return false;
+		var timestamp = Date.parse(new Date()) / 1000;
+		var cache = localStorage.getItem('user-unread:' + G_USER_ID);
+      	cache = cache ? JSON.parse(cache) : null;
+
+        function formatUnreadText(data){
+            var unread = Number(data.inbox_num);
+            if(unread>0) $('#inbox_unread').text(unread>99?'...':unread).show();
+            else $('#inbox_unread').hide();
+
+            var last_unread_notification = G_UNREAD_NOTIFICATION;
+            G_UNREAD_NOTIFICATION = Number(data.notifications_num);
+            if (G_UNREAD_NOTIFICATION > 0)
+            {
+                if (G_UNREAD_NOTIFICATION != last_unread_notification) $('#notifications_unread').html(G_UNREAD_NOTIFICATION>99?'...':G_UNREAD_NOTIFICATION);$('#notifications_unread').attr('data-unread',G_UNREAD_NOTIFICATION);
+                $('#notifications_unread').show();
+            }else{
+                if ($('.notification_popover .popover-content').length > 0) $('.notification_popover .popover-content').html('没有未读通知');
+                $('#notifications_unread').hide();
+            }
+
+            if (((Number(data.notifications_num) + Number(data.inbox_num))) > 0)
+            {
+                document.title = '(' + (Number(data.notifications_num) + Number(data.inbox_num)) + ') ' + document_title;
+            }
+        }
+        if (!force && cache && cache.timestamp > timestamp - unreadCacheSecond) {
+			formatUnreadText(cache.data);
+		} else {
+			$.get('/webapi/account/unread/', function (result) {
+				formatUnreadText(result.data);
+				localStorage.setItem('user-unread:' + G_USER_ID,JSON.stringify({ timestamp: Date.parse(new Date()) / 1000, data: result.data }));
+			},'json');
+		}
+    }
+
+    function read_notification(id){
+        if (id) {
+            $('#notification_'+id).remove();
+        }
+        if ($("#notifications_unread").length > 0)
+        {
+            G_UNREAD_NOTIFICATION = Number($('#notifications_unread').attr('data-unread'))-1;
+            $("#notifications_unread").html(G_UNREAD_NOTIFICATION>99?'...':G_UNREAD_NOTIFICATION);
+        }
+        $.get(G_BASE_URL + '/notifications/ajax/read_notification/notification_id-' + id + '__read_type-1', function (respose)
+        {
+            check_notifications(true);
+        });
+    }
+
+    function formatDateTime(ns) {
+        return new Date(parseInt(ns) * 1000).format('yyyy-MM-dd h:m');
+    }
+
+    function searchInputInit(){
+        $('#search_input').data('active',{row:0,topicCol:0});
+    }
+    function searchInputUnactive() {
+        var active = $('#search_input').data('active');
+        var rowsList = $('.search_item');
+        if(rowsList.length && active) {
+            rowsList.eq(active.row).removeClass('active');
+
+            var topSearchItem = $('.topic>.search_item');
+            var colsList = $('.topic>.search_item>a');
+            if (topSearchItem.length) colsList.eq(active.topicCol).removeClass('active');
+        }
+    }
+    function searchInputActive(){
+        var active = $('#search_input').data('active');
+        if(active.row < 0) return;
+        var rowsList = $('.search_item');
+        if(rowsList.length) {
+            rowsList.eq(active.row).addClass('active');
+
+            var topSearchItem = $('.topic>.search_item.active');
+            var colsList = $('.topic>.search_item>a');
+            if (topSearchItem.length) colsList.eq(active.topicCol).addClass('active');
+        }
+    }
+    function searchInputEnter(){
+        var active = $('#search_input').data('active');
+        console.log(active);
+        if(active.row < 0){
+            $('#global_search_form').submit();//未选中条目跳转搜索页
+        }else {
+            var rowsList = $('.search_item');
+            if(rowsList.length) {
+                var topSearchItem = $('.topic>.search_item.active');
+                var colsList = $('.topic>.search_item>a');
+                if (topSearchItem.length) {
+                    colsList.eq(active.topicCol)[0].click();
+                }else{
+                    $('a',rowsList.eq(active.row))[0].click();
+                }
+            }
+        }
+    }
+    function searchInputTopicIndex(){
+        var index = -1;
+        var rowsList = $('.search_item');
+        for(var i=0; i< $('.search_item').length;i++){
+            if(rowsList.eq(i).parent().hasClass('topic')){
+                index = i;break;
+            }
+        }
+        return index;
+    }
+
+    function generateDataHtml(data){
+        var html = new Array();
+        var keyword = $('#search_input').val();
+        if(data && data.type==9 && data.data.length>0){
+            html.push('<div class="search_type data">');
+            html.push('<div class="title">数据</div><div class="more"><a href="javascript:void(0)" onclick="$(\'#search_type\').val(\'data\');$(\'#global_search_form\').submit()">更多数据&gt;&gt;</a></div>');
+            for(var i=0;i<data.data.length;i++) {
+                html.push('<div class="search_item"><a target="_blank" href="'+data.data[i].uri+'"><div class="search_text">'+data.data[i].sname+' ('+ data.data[i].market.toUpperCase() + data.data[i].sid +')</div><div class="search_info">'+data.data[i].tname+'</div></a></div>');
+            }
+            html.push('</div>');
+        }
+        return html.join('');
+    }
+    function generateTopicHtml(data){
+        var html = new Array();
+        var keyword = $('#search_input').val();
+        if(data && data.type==2 && data.data.length>0){
+            html.push('<div class="search_type topic">');
+            html.push('<div class="title">标签</div><div class="more"><a href="javascript:void(0)" onclick="$(\'#search_type\').val(\'topics\');$(\'#global_search_form\').submit()">更多标签&gt;&gt;</a></div><div class="search_item">');
+            for(var i=0;i<data.data.length;i++) {
+                html.push('<a href="'+data.data[i].url+'">'+data.data[i].name+'</a>');
+            }
+            html.push('</div></div>');
+        }
+        return html.join('');
+    }
+    function generateUserHtml(data){
+        var html = new Array();
+        var keyword = $('#search_input').val();
+        if(data && data.type==3 && data.data.length>0){
+            html.push('<div class="search_type user">');
+            html.push('<div class="title">用户</div><div class="more"><a href="javascript:void(0)" onclick="$(\'#search_type\').val(\'users\');$(\'#global_search_form\').submit()">更多用户&gt;&gt;</a></div>');
+            for(var i=0;i<data.data.length;i++) {
+                html.push('<div class="search_item"><a href="'+data.data[i].url+'"><div class="search_info"><img src="'+data.data[i].detail.avatar_file+'" /></div><div class="search_text">'+data.data[i].name+'</div></a></div>');
+            }
+            html.push('</div>');
+        }
+        return html.join('');
+    }
+    function generateQuestionHtml(data){
+        var html = new Array();
+        var keyword = $('#search_input').val();
+        if(data && data.type==1 && data.data.length>0){
+            html.push('<div class="search_type question">');
+            html.push('<div class="title">问题</div><div class="more"><a href="javascript:void(0)" onclick="$(\'#search_type\').val(\'questions\');$(\'#global_search_form\').submit()">更多问题&gt;&gt;</a></div>');
+            for(var i=0;i<data.data.length;i++) {
+                html.push('<div class="search_item"><a href="'+data.data[i].url+'"><div class="search_text">'+data.data[i].name+'</div><div class="search_info">'+data.data[i].detail.meta_percent+'%匹配</div></a></div>');
+            }
+            html.push('</div>');
+        }
+        return html.join('');
+    }
+    function generateAnswerHtml(data){
+        var html = new Array();
+        var keyword = $('#search_input').val();
+        if(data && data.type==4 && data.data.length>0){
+            html.push('<div class="search_type answer">');
+            html.push('<div class="title">回复</div><div class="more"><a href="javascript:void(0)" onclick="$(\'#search_type\').val(\'answers\');$(\'#global_search_form\').submit()">更多回复&gt;&gt;</a></div>');
+            for(var i=0;i<data.data.length;i++) {
+                html.push('<div class="search_item"><a href="'+data.data[i].url+'"><div class="search_text">'+data.data[i].name+'</div><div class="search_info">'+data.data[i].detail.meta_percent+'%匹配</div></a></div>');
+            }
+            html.push('</div>');
+        }
+        return html.join('');
+    }
+
+    $(document).ready(function() {
+        if (document.querySelector('body .header_navbar_bg')) {
+            document.body.style.display = 'inline-block';
+            document.body.style.minWidth = '100%';
+        }
+
+        document_title = document.title;
+        var ua = window.navigator.userAgent.toLowerCase();
+        var webkit = ua.match( /webkit\/([\d.]+)/ ), 
+        firefox = ua.match( /firefox\/([\d.]+)/ ),
+        edge = ua.match( /edg\/([\d.]+)/ ), 
+        chrome = ua.match( /chrome\/([\d.]+)/ ), 
+        safari = ua.match( /safari\/([\d.]+)/ ),
+        ie = ua.match( /msie\s([\d\.]+)/ ) || ua.match( /(?:trident)(?:.*rv:([\w.]+))?/i );
+
+        if (localStorage.getItem('data-cb-version') === 'old') {
+            $('#nav_data').attr('href', '/data/cbnew/');
+        }
+    
+        var currAgent = {};
+        var browser_suggest = true;
+        if (firefox) {
+            currAgent['name'] = 'firefox';
+            currAgent['version'] = parseInt(firefox[1]);
+            if(currAgent['version'] >= 53) browser_suggest = false;
+        } else if (edge) {
+            currAgent['name'] = 'edge';
+            currAgent['version'] = parseInt(edge[1]);
+            if(currAgent['version'] >= 79) browser_suggest = false;
+        } else if (chrome) {
+            currAgent['name'] = 'chrome';
+            currAgent['version'] = parseInt(chrome[1]);
+            if(currAgent['version'] >= 66) browser_suggest = false;
+        } else if (safari) {
+            var version = ua.match( /version\/([\d.]+)/ );
+            currAgent['name'] = 'safari';
+            currAgent['version'] = parseInt(version[1]);
+            if(currAgent['version'] >= 11) browser_suggest = false;
+        } else if (webkit) {
+            currAgent['name'] = 'webkit';
+            currAgent['version'] = parseInt(webkit[1]);
+            if(currAgent['version'] >= 537) browser_suggest = false;
+        }
+        if (browser_suggest) $('#browser_suggest').show();
+
+        if (!navigator.cookieEnabled) {
+            $('body').prepend('<div class="browser_suggest">请允许站点保存和读取 Cookie 数据，否则站点无法正常使用。</div>');
+        }
+
+        if (typeof (G_NOTIFICATION_INTERVAL) != 'undefined')
+        {
+            check_notifications(window.location.href.indexOf('notification_id-')?true:false);
+            setInterval('check_notifications()', G_NOTIFICATION_INTERVAL);
+        }
+
+        var debug_user = false;
+        $('#user_menu').popover({
+            placement:"bottom auto",
+            trigger:"manual",
+            content:" ",
+            html:true,
+            template:'<div class="user_menu_popover popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
+        }).on("mouseenter", function (){
+            var _this = this;
+            if(!$(this).parent().find('div.popover').length || $(this).parent().find('div.popover').is(':hidden')) $(this).popover("show");
+            $(".popover", $(this).parent()).on("mouseleave", function () {
+                setTimeout(function () {if(!$(":hover",_this).length && !debug_user) $(_this).popover("hide");},300);
+            });
+            
+        }).on("mouseleave", function () {
+            var _this = this;
+            setTimeout(function () {if (!$(_this).parent().find(".popover:hover").length && !debug_user) $(_this).popover("hide");}, 300);
+        }).on('shown.bs.popover', function () {
+            var _this = this;
+            var box = $(this).parent().find('div.popover');
+            var menu = $(this).parent().find('.popover-menu').clone();
+
+            $('.popover-content',box).html(menu);
+            menu.show();
+        });
+
+
+        $('#notification_btn').popover({
+            placement:"bottom auto",
+            trigger:"manual",
+            content:"没有未读通知",
+            html:true,
+            template:'<div class="notification_popover popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
+        })
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).data('status','enter');
+            if(!$(this).parent().find('div.popover').length || $(this).parent().find('div.popover').is(':hidden')) $(this).popover("show");
+            $(".popover", $(this).parent()).on("mouseleave", function () {
+                setTimeout(function () {
+                    if($(_this).data('status')!='enter') $(_this).popover("hide");
+                }, 300);
+            });
+        })
+        .on("mouseleave", function () {
+            var _this = this;
+            $(this).data('status','leave');
+            setTimeout(function () {
+                if (!$(_this).parent().find(".popover:hover").length && $(_this).data('status')!='enter') $(_this).popover("hide");
+            }, 300);
+        })
+        .on("mousemove", function () {
+            if(!$(this).parent().find('div.popover').length || $(this).parent().find('div.popover').is(':hidden')) $(this).popover("show");
+        })
+        .on('shown.bs.popover', function () {
+            var _this = this;
+            var box = $(this).parent().find('div.popover');
+            var notifications_unread = Number($('#notifications_unread').text());
+            if(notifications_unread<=0) return;
+            $.ajax({
+                type: "GET",
+                url: G_BASE_URL + '/notifications/ajax/last/flag-0__limit-5',
+                success: function (data, textStatus) {
+                    var html = new Array();
+                    for(var i=0; i<data.rsm.list.length;i++) {
+                        //data.rsm.list[i].extend_message = 'extend_message';
+                        var item = new Array();
+                        item.push('<div id="notification_'+data.rsm.list[i].notification_id+'">');
+                        item.push('<div class="message">'+data.rsm.list[i].message+'<a class="close" href="javascript:read_notification('+data.rsm.list[i].notification_id+')">×</a></div>');
+                        item.push('<div class="addtime">'+formatDateTime(data.rsm.list[i].add_time)+(data.rsm.list[i].extend_message?'<a class="extend" href="javascript:void(0)" onclick="$(\'#notification_'+data.rsm.list[i].notification_id+'\').find(\'.extend_message\').fadeIn();$(this).hide();">+</a>':'')+'</div>');
+                        if(data.rsm.list[i].extend_message)item.push('<div class="extend_message" style="display: none">'+data.rsm.list[i].extend_message+'</div>');
+                        item.push('</div>');
+                        html.push(item.join(''));
+
+                    }
+                    $('.popover-content',box).html(html.join(''));
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(textStatus + "\n" + jqXHR.responseText);
+                }
+            });
+
+        });
+
+        $('#search_input').popover({
+            placement:"bottom",
+            content:"<div class=\"no_content\">没有搜索到内容</div>",
+            trigger:"manual",
+            html:true,
+            template:'<div class="popover" role="tooltip"><div class="arrow"></div><div class="popover-content"></div></div>'
+        }).on('shown.bs.popover', function () {
+
+            var box = $(this).parent().find('div.popover');
+            var inputValue = $(this).val();
+            //console.log(inputValue);
+            if(inputValue.length < 2) {
+                $('.popover-content',box).html('<div class="no_content">没有搜索到内容</div>');
+                return;
+            }
+
+            $.get(G_BASE_URL + '/search/ajax/searchtype/?q='+inputValue, function (data) {
+                if(data && data.length>0){
+                    var htmlArray = new Array(),htmlType9 = '',htmlType2 = '',htmlType3 = '',htmlType1 = '',htmlType4 = '';
+                    for(var i=0; i<data.length; i++){
+                        //1:questions 2:topics 3:users 4:answers 9:data
+                        if(data[i].type == 9) htmlType9 = generateDataHtml(data[i]);
+                        if(data[i].type == 2) htmlType2 = generateTopicHtml(data[i]);
+                        if(data[i].type == 3) htmlType3 = generateUserHtml(data[i]);
+                        if(data[i].type == 1) htmlType1 = generateQuestionHtml(data[i]);
+                        if(data[i].type == 4) htmlType4 = generateAnswerHtml(data[i]);
+                    }
+                    htmlArray.push(htmlType9);
+                    htmlArray.push(htmlType2);
+                    htmlArray.push(htmlType3);
+                    htmlArray.push(htmlType1);
+                    htmlArray.push(htmlType4);
+
+                    var htmlDom = $(htmlArray.join(''));
+
+                    var itemList = $('.search_item .search_text',htmlDom);
+
+                    for(var i = 0; i < itemList.length; i++){
+                        itemList.eq(i).html(itemList.eq(i).html().replace(inputValue,'<span class="match">'+inputValue+'</span>'));
+                    }
+                    var topicList = $('.topic>.search_item>a',htmlDom);
+                    for(var i = 0; i < topicList.length; i++){
+                        topicList.eq(i).html(topicList.eq(i).html().replace(inputValue,'<span class="match">'+inputValue+'</span>'));
+                    }
+                    $('.popover-content',box).html(htmlDom);
+                    searchInputInit();
+                    searchInputActive();
+                }else{
+                    $('.popover-content',box).html('<div class="no_content">没有搜索到内容</div>');
+                }
+            });
+        });
+        //$('#search_input').popover('show');
+
+        $('#search_input').on('input propertychange',function(event){
+            var _this = this;
+            var inputValue = $(this).val();
+            if (window.event && event.type == 'propertychange' && event.propertyName != 'value') return;
+
+            window.clearTimeout($(this).data('timeout'));
+            $(this).data('timeout', setTimeout(function () {
+                if(inputValue.length > 0){
+                    $(_this).popover('show');
+                    //console.log('值改变了~输入值：' + inputValue);
+                }else{
+                    $(_this).popover('hide');
+                }
+            }, 500));
+        }).on('keydown',function(event){
+            if($.inArray(event.keyCode,[27,13,38,40,37,39]) === -1) return;
+            var rowsList = $('.search_item');
+            if(rowsList.length <=0) return;
+            var colsList = $('.topic>.search_item>a');
+            var topicIndex = searchInputTopicIndex();
+            var active =$(this).data('active');
+            searchInputUnactive();
+            switch (event.keyCode) {
+                case 27://esc
+                    $(this).val('');
+                    searchInputInit();
+                    $(this).popover('hide');
+                    break;
+                case 13://enter
+                    searchInputEnter();
+                    break;
+                case 38://top
+                    active.row -= 1;
+                    if(active.row < 0) active.row = rowsList.length - 1;
+                    break;
+                case 40://down
+                    active.row += 1;
+                    if(active.row >= rowsList.length) active.row = 0;
+                    break;
+                case 37://left
+                    if(topicIndex==active.row && colsList.length > 0){
+                        active.topicCol -= 1;
+                        if(active.topicCol < 0) active.topicCol = colsList.length - 1;
+                        event.stopPropagation();
+                        event.preventDefault();
+                    }
+                    break;
+                case 39://right
+                    if(topicIndex==active.row && colsList.length > 0){
+                        active.topicCol += 1;
+                        if(active.topicCol >= colsList.length) active.topicCol = 0;
+                        event.stopPropagation();
+                        event.preventDefault();
+                    }
+                    break;
+            }
+            searchInputActive();
+        }).on('blur',function (event) {
+            $(this).popover('hide');
+        });
+
+
+    });
+
+</script><div class="header_subnavbar_bg">
+    <div class="grid header_subnavbar_content">
+        <div class="grid-row">
+            <div class="grid-col-3">
+                <div class="subnavbar_left">
+                    <!--a href="/data/mine/" >自选</a-->
+                    <a href="/web/positions" class="beta">持仓</a>
+                </div>
+            </div>
+            <div class="grid-col-21">
+                <div class="subnavbar_right">
+                    <div>
+                        <a href="/data/new_stock/" >新股</a>
+                        <a href="/data/stock/dividend_rate/" >股息率</a>
+                        <a href="/data/taoligu/" >套利股</a>
+                        <a href="/data/bond/" >债券</a>
+                        <a id="menu_cb" href="/web/data/cb/" class="on">可转债</a>
+                        <a href="/data/cf/" >封闭基金</a>
+                        <a href="/data/etf/" >ETF</a>
+                    </div>
+                    <div>
+                        <a href="/data/repo/" >现金管理</a>
+                        <a href="/data/ha/" >A/H比价</a>
+                        <a href="/data/qdii/" >T+0 QDII</a>
+                        <a href="/data/cnreits/" >REITs</a>
+                        <a href="/data/idx_performance/" >指数涨幅</a>
+                        <a href="/data/lof/" >LOF</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    if (localStorage.getItem('data-cb-version') === 'old') {
+        $('#menu_cb').attr('href', '/data/cbnew/');
+    }
+});
+
+</script>
+<div class="grid data_content">
+
+
+<div class="grid-row data_type_nav">
+	<div class="topic_nav">
+		<ul class="nav nav-pills" id="topic">
+			<li role="presentation"><a href="javascript:;" alias="tlink_3" id="tlink_cb"     tname="cb"      fname=showConvertBond>可转债</a></li>
+			<li role="presentation"><a href="javascript:;" alias="tlink_5" id="tlink_redeem" tname="redeem"  fname=showForceRedeem>强赎</a></li>
+			<li role="presentation"><a href="javascript:;" alias="tlink_5" id="tlink_adjust" tname="adjust"  fname=showAdjust>下修</a></li>
+			<li role="presentation"><a href="javascript:;" alias="tlink_2" id="tlink_put"    tname="put"     fname=showHuishou>回售</a></li>
+			<li role="presentation"><a href="/data/cbnew/scatter/" tname="scatter" style="color:red;">藏宝图</a></li>
+			<li role="presentation"><a href="javascript:;" alias="tlink_6" id="tlink_pre"    tname="pre"     fname=showPreCB>待发转债</a></li>
+            <li role="presentation"><a href="/data/cbnew/announcement/" target="_blank" tname="anno">最新公告</a></li>
+            <li role="presentation"><a href="javascript:;" alias="tlink_7" id="tlink_delisted"    tname="delisted"     fname=showDelistedCB>已退市转债</a></li>
+			<li role="presentation"><a href="javascript:gotoNew();" tname="gotonew" style="font-size: 12px; color: #fff; background-color: #d9534f; border:1px solid #d43f3a; border-radius: 3px;">去定制版</a></li>
+		</ul>
+	</div>
+	<div class="data_index">
+		<span class="index_quote_info"></span>
+	</div>
+</div>
+
+<div class="grid-row data_table_tabs">
+
+	<div id="topic_cb" style="display:none;">
+				<form id="convertBondSearchForm" onsubmit="searchConvertBond();return false;" class="form-inline">
+
+		转债价格 <input class="form-control input-xs" style="width:45px;" name="fprice" value="">
+			到 <input class="form-control input-xs" style="width:50px;" name="tprice" value="">元&nbsp;&nbsp;
+		剩余规模≤ <input class="form-control input-xs" style="width:30px;" name="curr_iss_amt" value="10">亿元&nbsp;&nbsp;
+		转债占比≤ <input class="form-control input-xs" style="width:40px;" name="convert_amt_ratio" value="">%&nbsp;&nbsp;
+				资产负债率≤ <input class="form-control input-xs" style="width:40px;" value="" disabled title="会员可用">%&nbsp;&nbsp;
+				转股溢价率≤ <input class="form-control input-xs" style="width:40px;" name="premium_rt" value="50">%&nbsp;&nbsp;
+		到期收益率≥ <input class="form-control input-xs" style="width:40px;" name="ytm_rt" value="">%&nbsp;&nbsp;
+				剩余年限 <input class="form-control input-xs" style="width:35px;" name="fyear_left" value="">
+			到 <input class="form-control input-xs" style="width:35px;" name="tyear_left" value="">年&nbsp;&nbsp;
+		评级 <select id="rcds_select" multiple="multiple" name="rating_cd" style="width:60px;">
+								<option value="AAA" selected>AAA</option>
+								<option value="AA+" selected>AA+</option>
+								<option value="AA" selected>AA</option>
+								<option value="AA-" selected>AA-</option>
+								<option value="A+" selected>A+</option>
+								<option value="A" selected>A</option>
+								<option value="A-" selected>A-</option>
+								<option value="BBB+" selected>BBB+</option>
+								<option value="BBB" selected>BBB</option>
+								<option value="BBB-" selected>BBB-</option>
+								<option value="BB+" selected>BB+</option>
+								<option value="BB" selected>BB</option>
+								<option value="BB-" selected>BB-</option>
+								<option value="B+" selected>B+</option>
+								<option value="B" selected>B</option>
+								<option value="B-" selected>B-</option>
+								<option value="CCC" selected>CCC</option>
+								<option value="CC" selected>CC</option>
+								<option value="C" selected>C</option>
+								<option value="无" selected>无</option>
+							</select>
+		<button type="submit" class="btn btn-primary btn-xs">筛选</button>
+		<button type="button" onclick="resetConvertBondSearch()" class="btn btn-default btn-xs">重置</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;<a href="/web/data/cb/strategy/grade" target="_blank" style="color:red">可转债评分系统 <img src="/static/img/new.gif" alt="new"/></a>
+		</form>
+
+		<div style="min-width:1400px;" class="clearfix">
+			<div class="pull-left">
+				<span id="searchConvertBondTip" class="tip">
+								<span style="color:red;">当前结果为<strong>最后</strong>的筛选条件执行结果；</span>如需显示默认结果请点击“重置”按钮；
+								</span>
+				<span title="现价低于历史最低收盘价，或当日收盘价为历史最低"><label style="display: inline; margin-left: 50px;color:#ff8c00"><input onclick="reloadConvertBondSearch();" id="min_price_only" type="checkbox">仅看历史新低转债</label></span>
+				<label style="display: inline; margin-left: 10px;"><input onclick="reloadConvertBondSearch(this);" id="show_blocked"  type="checkbox">显示已拉黑<span id="blocked_count"></span></label>
+			</div>
+
+			<div id="historySearch" class="pull-right form-inline">
+                            </div>
+		</div>
+		
+
+		<table id="flex_cb" style="display:none;min-width:1700px;" class="tablesorter"></table>
+		<div class="tip">数据说明：<a href="https://www.jisilu.cn/question/273614" target="_dblow">双低</a>策略请参见 <a href="https://www.jisilu.cn/people/yyb%E5%87%8C%E6%B3%A2" target="_yy">@yyb凌波</a> 的 <a href="https://www.jisilu.cn/question/429345" target="_dblow">可转债轮动策略</a> 实盘。</div>
+		<div class="tip">
+			转债名称与强制状态说明：
+            <span style="color:red;font-weight:bold;">红色名称</span>为自选转债
+            <span style="color:#ff8c00;font-weight:bold;margin-left:15px">橙色名称</span>为持仓转债
+            <span style="color:#aaaaaa;font-weight:bold;margin-left:15px">灰色名称</span>为合格机构可买转债
+
+			<span style="color:#a9a9a9;font-weight:bold;margin-left:25px">!</span> 公告不强赎
+			<span style="color:#206798;font-weight:bold;margin-left:15px">!</span> 已满足强赎条件
+			<span style="color:#FFA500;font-weight:bold;margin-left:15px">!</span> 公告要强赎
+			<span style="color:red;font-weight:bold;margin-left:15px">!</span> 已公告强赎/临近到期
+		</div>
+		<div class="tip">
+			<span style="color:#aaaaaa;font-style:italic;">灰色数据</span>：未到转股期的转股溢价率、未确认的回售收益数据等虚值
+		</div>
+	</div>
+	<div id="topic_redeem" style="display:none">
+		<table id="flex_redeem" style="display:none;min-width:1300px;" class="tablesorter"></table>
+	</div>
+	<div id="topic_adjust" style="display:none">
+		<table id="flex_adjust" style="display:none;min-width:1300px;" class="tablesorter"></table>
+		<div class="tip">数据说明：<br>
+			转股价标记：<span style="color:red;font-weight:bolder">红色*</span>下修通过；<span style="color:green;font-weight:bolder">绿色*</span>下修不通过；<span style="color:black;font-weight:bolder">黑色*</span>下修进行中<br>
+			下修天计数：最靠前的为最近3天内下修通过或不通过的转债；然后是下修进行中的；然后是下修计数中的；最后为下修计数未开始的<br>
+			下修计数中：格式 [<strong>2 / 15 | 30 <span style="color:red;font-weight:bolder">*</span></strong>] 表示最近 30 个工作日中触发下修共需 15 个交易日，截止最新收盘有 2 个交易日达到下修触发价格，历史上有 1 次不下修公告（下修计数在收盘后一个小时左右更新）<br>
+			临近满足下修条件转债：至少还需1到3个交易日(不含当日盘中)才满足下修触发条件的转债<br>
+			转股价的历次下修调整或不下修公告情况可点击查看，不下修公告从 2022-01-01 开始记录，2022-08-01 新规后若公司也未发布不下修公告则不自动记录<br>
+			本列表默认按距下修还需满足天数排序，但满足下修后超3个交易日还不发布是否下修公告则将排序降为最低<br>
+		</div>
+	</div>
+	<div id="topic_put" style="display:none">
+		<table id="flex_put" style="display:none;min-width:1300px;" class="tablesorter"></table>
+	</div>
+	<div id="topic_other" style="display:none;">
+		<table id="flex_other" style="display:none;min-width:1300px;" class="tablesorter"></table>
+	</div>
+	<div id="topic_pre" style="display:none">
+		<form class="form-inline" id="preSearchForm">
+
+			类型: <label><input onclick="showPreCB();" name="cb_type_Y" type="checkbox" value="Y"> 可转债</label>
+			<label><input onclick="showPreCB();" name="cb_type_N" type="checkbox" value="N"> 可交换债</label>
+
+			<span style="margin-left: 200px;"></span>方案进展:
+			<select class="form-control input-xs" name="progress" onchange="showPreCB()">
+				<option value="">全部</option>
+				<option value="90">同意注册</option>
+				<option value="80">上市委通过</option>
+				<option value="50">交易所受理</option>
+				<option value="20">股东大会通过</option>
+				<option value="10">董事会预案</option>
+			</select>
+
+			<a target="_blank" href="/data/cbnew/pre/" style="margin-left: 300px;">待发转债历史</a>
+
+		</form>
+		<table id="flex_pre" style="display:none;min-width:1300px;" class="tablesorter"></table>
+		<div class="tip">注：转股价灰色斜体部分为20日均价，请谨慎参考。</div>
+	</div>
+    <div id="topic_delisted" style="display:none;">
+        <table id="flex_delisted" style="display:none;width:1200px;" class="tablesorter"></table>
+    </div>
+	<div id="topic_owned" style="display:none;">
+		<table id="flex_owned" style="display:none;min-width:1300px;" class="tablesorter"></table>
+		<div class="ui-widget">
+			<form onsubmit="onSubmitAddOwnedConvertBond(); return false;">
+				<label>请输入可转债代码</label>
+				<input size="20" name="owned_convertbond_id" id="owned_convertbond_id" type="text" maxlength="20">
+				<input type="submit" value="添加自选">
+			</form>
+		</div>
+	</div>
+
+</div>
+
+<div style="display:none;">
+<div id="tableConvertBondTitle">
+<a data-toggle="tooltip" title="该功能为会员可用" data-trigger="hover" data-placement="top"><span class="jisilu-icons fallgreen">&#xe877;</span></a>
+可转债(<a href="javascript:reloadConvertBondSearch();">手动刷新</a> &nbsp;<span data-toggle="tooltip" title="自动刷新购买会员可用"><input id="auto_reload" type="checkbox" disabled />30秒自动刷新</span>)&nbsp;&nbsp;
+行业<select id="sw_cd" onchange="reloadConvertBondSearch()" style="width: 180px; height: 24px; font-size: 12px; ">
+        <option data-pinyin=""  data-level="0" value="" selected>【全部】</option>
+        <option data-pinyin="nlmy"  data-level="1" value="11" >农林牧渔(8)</option>
+        <option data-pinyin="sl"  data-level="2" value="1104" >饲料(2)</option>
+        <option data-pinyin="cqsl"  data-level="3" value="110402" >畜禽饲料(1)</option>
+        <option data-pinyin="cwsp"  data-level="3" value="110404" >宠物食品(1)</option>
+        <option data-pinyin="yzy"  data-level="2" value="1107" >养殖业(6)</option>
+        <option data-pinyin="szyz"  data-level="3" value="110702" >生猪养殖(4)</option>
+        <option data-pinyin="rjyz"  data-level="3" value="110703" >肉鸡养殖(2)</option>
+        <option data-pinyin="jchg"  data-level="1" value="22" >基础化工(33)</option>
+        <option data-pinyin="hxyl"  data-level="2" value="2202" >化学原料(3)</option>
+        <option data-pinyin="lj"  data-level="3" value="220202" >氯碱(2)</option>
+        <option data-pinyin="tbf"  data-level="3" value="220206" >钛白粉(1)</option>
+        <option data-pinyin="hxzp"  data-level="2" value="2203" >化学制品(9)</option>
+        <option data-pinyin="tlym"  data-level="3" value="220305" >涂料油墨(1)</option>
+        <option data-pinyin="fzhxzp"  data-level="3" value="220308" >纺织化学制品(1)</option>
+        <option data-pinyin="qthxzp"  data-level="3" value="220309" >其他化学制品(5)</option>
+        <option data-pinyin="spjsltjj"  data-level="3" value="220315" >食品及饲料添加剂(1)</option>
+        <option data-pinyin="yjg"  data-level="3" value="220316" >有机硅(1)</option>
+        <option data-pinyin="hxxw"  data-level="2" value="2204" >化学纤维(5)</option>
+        <option data-pinyin="dl"  data-level="3" value="220401" >涤纶(2)</option>
+        <option data-pinyin="jl"  data-level="3" value="220406" >锦纶(3)</option>
+        <option data-pinyin="sl"  data-level="2" value="2205" >塑料(7)</option>
+        <option data-pinyin="qtslzp"  data-level="3" value="220501" >其他塑料制品(2)</option>
+        <option data-pinyin="gxsl"  data-level="3" value="220503" >改性塑料(1)</option>
+        <option data-pinyin="hcsz"  data-level="3" value="220504" >合成树脂(1)</option>
+        <option data-pinyin="mcl"  data-level="3" value="220505" >膜材料(3)</option>
+        <option data-pinyin="xj"  data-level="2" value="2206" >橡胶(4)</option>
+        <option data-pinyin="qtxjzp"  data-level="3" value="220602" >其他橡胶制品(1)</option>
+        <option data-pinyin="th"  data-level="3" value="220603" >炭黑(2)</option>
+        <option data-pinyin="xjzj"  data-level="3" value="220604" >橡胶助剂(1)</option>
+        <option data-pinyin="nhzp"  data-level="2" value="2208" >农化制品(4)</option>
+        <option data-pinyin="lfjlhg"  data-level="3" value="220802" >磷肥及磷化工(1)</option>
+        <option data-pinyin="ny"  data-level="3" value="220803" >农药(2)</option>
+        <option data-pinyin="fhf"  data-level="3" value="220805" >复合肥(1)</option>
+        <option data-pinyin="fjscl"  data-level="2" value="2209" >非金属材料Ⅱ(1)</option>
+        <option data-pinyin="fjscl"  data-level="3" value="220901" >非金属材料Ⅲ(1)</option>
+        <option data-pinyin="gt"  data-level="1" value="23" >钢铁(6)</option>
+        <option data-pinyin="ygyl"  data-level="2" value="2303" >冶钢原料(1)</option>
+        <option data-pinyin="tks"  data-level="3" value="230301" >铁矿石(1)</option>
+        <option data-pinyin="pg"  data-level="2" value="2304" >普钢(3)</option>
+        <option data-pinyin="bc"  data-level="3" value="230402" >板材(1)</option>
+        <option data-pinyin="gtgc"  data-level="3" value="230403" >钢铁管材(2)</option>
+        <option data-pinyin="tg"  data-level="2" value="2305" >特钢Ⅱ(2)</option>
+        <option data-pinyin="tg"  data-level="3" value="230501" >特钢Ⅲ(2)</option>
+        <option data-pinyin="ysjs"  data-level="1" value="24" >有色金属(10)</option>
+        <option data-pinyin="gyjs"  data-level="2" value="2403" >工业金属(10)</option>
+        <option data-pinyin="l"  data-level="3" value="240301" >铝(6)</option>
+        <option data-pinyin="t"  data-level="3" value="240302" >铜(4)</option>
+        <option data-pinyin="dz"  data-level="1" value="27" >电子(34)</option>
+        <option data-pinyin="bdt"  data-level="2" value="2701" >半导体(16)</option>
+        <option data-pinyin="flqj"  data-level="3" value="270102" >分立器件(4)</option>
+        <option data-pinyin="bdtcl"  data-level="3" value="270103" >半导体材料(3)</option>
+        <option data-pinyin="szxpsj"  data-level="3" value="270104" >数字芯片设计(5)</option>
+        <option data-pinyin="mnxpsj"  data-level="3" value="270105" >模拟芯片设计(1)</option>
+        <option data-pinyin="jcdlfc"  data-level="3" value="270107" >集成电路封测(2)</option>
+        <option data-pinyin="bdtsb"  data-level="3" value="270108" >半导体设备(1)</option>
+        <option data-pinyin="yj"  data-level="2" value="2702" >元件(3)</option>
+        <option data-pinyin="yzdlb"  data-level="3" value="270202" >印制电路板(3)</option>
+        <option data-pinyin="gxgdz"  data-level="2" value="2703" >光学光电子(1)</option>
+        <option data-pinyin="gxyj"  data-level="3" value="270303" >光学元件(1)</option>
+        <option data-pinyin="qtdz"  data-level="2" value="2704" >其他电子Ⅱ(3)</option>
+        <option data-pinyin="qtdz"  data-level="3" value="270401" >其他电子Ⅲ(3)</option>
+        <option data-pinyin="xfdz"  data-level="2" value="2705" >消费电子(7)</option>
+        <option data-pinyin="ppxfdz"  data-level="3" value="270503" >品牌消费电子(1)</option>
+        <option data-pinyin="xfdzlbjjzz"  data-level="3" value="270504" >消费电子零部件及组装(6)</option>
+        <option data-pinyin="dzhxp"  data-level="2" value="2706" >电子化学品Ⅱ(4)</option>
+        <option data-pinyin="dzhxp"  data-level="3" value="270601" >电子化学品Ⅲ(4)</option>
+        <option data-pinyin="qc"  data-level="1" value="28" >汽车(21)</option>
+        <option data-pinyin="qclbj"  data-level="2" value="2802" >汽车零部件(18)</option>
+        <option data-pinyin="csfjjsj"  data-level="3" value="280202" >车身附件及饰件(4)</option>
+        <option data-pinyin="dpyfdjxt"  data-level="3" value="280203" >底盘与发动机系统(4)</option>
+        <option data-pinyin="ltlg"  data-level="3" value="280204" >轮胎轮毂(1)</option>
+        <option data-pinyin="qtqclbj"  data-level="3" value="280205" >其他汽车零部件(6)</option>
+        <option data-pinyin="qcdzdqxt"  data-level="3" value="280206" >汽车电子电气系统(3)</option>
+        <option data-pinyin="qcfw"  data-level="2" value="2803" >汽车服务(1)</option>
+        <option data-pinyin="qcjxs"  data-level="3" value="280302" >汽车经销商(1)</option>
+        <option data-pinyin="mtcjqt"  data-level="2" value="2804" >摩托车及其他(1)</option>
+        <option data-pinyin="qtyssb"  data-level="3" value="280401" >其他运输设备(1)</option>
+        <option data-pinyin="cyc"  data-level="2" value="2805" >乘用车(1)</option>
+        <option data-pinyin="zhcyc"  data-level="3" value="280502" >综合乘用车(1)</option>
+        <option data-pinyin="jydq"  data-level="1" value="33" >家用电器(5)</option>
+        <option data-pinyin="xjd"  data-level="2" value="3303" >小家电(3)</option>
+        <option data-pinyin="cfxjd"  data-level="3" value="330301" >厨房小家电(1)</option>
+        <option data-pinyin="qjxjd"  data-level="3" value="330302" >清洁小家电(2)</option>
+        <option data-pinyin="cwdq"  data-level="2" value="3304" >厨卫电器(2)</option>
+        <option data-pinyin="cfdq"  data-level="3" value="330401" >厨房电器(2)</option>
+        <option data-pinyin="spyl"  data-level="1" value="34" >食品饮料(9)</option>
+        <option data-pinyin="spjg"  data-level="2" value="3404" >食品加工(3)</option>
+        <option data-pinyin="rzp"  data-level="3" value="340401" >肉制品(1)</option>
+        <option data-pinyin="bjp"  data-level="3" value="340407" >保健品(2)</option>
+        <option data-pinyin="fbj"  data-level="2" value="3406" >非白酒(1)</option>
+        <option data-pinyin="qtjl"  data-level="3" value="340602" >其他酒类(1)</option>
+        <option data-pinyin="ylrp"  data-level="2" value="3407" >饮料乳品(3)</option>
+        <option data-pinyin="ryl"  data-level="3" value="340701" >软饮料(1)</option>
+        <option data-pinyin="rp"  data-level="3" value="340702" >乳品(2)</option>
+        <option data-pinyin="xxsp"  data-level="2" value="3408" >休闲食品(2)</option>
+        <option data-pinyin="ls"  data-level="3" value="340801" >零食(1)</option>
+        <option data-pinyin="hbsp"  data-level="3" value="340802" >烘焙食品(1)</option>
+        <option data-pinyin="fzfs"  data-level="1" value="35" >纺织服饰(5)</option>
+        <option data-pinyin="fzzz"  data-level="2" value="3501" >纺织制造(2)</option>
+        <option data-pinyin="yr"  data-level="3" value="350104" >印染(1)</option>
+        <option data-pinyin="qtfz"  data-level="3" value="350106" >其他纺织(1)</option>
+        <option data-pinyin="fzjf"  data-level="2" value="3502" >服装家纺(3)</option>
+        <option data-pinyin="xmjqt"  data-level="3" value="350205" >鞋帽及其他(1)</option>
+        <option data-pinyin="fydfz"  data-level="3" value="350209" >非运动服装(2)</option>
+        <option data-pinyin="qgzz"  data-level="1" value="36" >轻工制造(14)</option>
+        <option data-pinyin="zz"  data-level="2" value="3601" >造纸(2)</option>
+        <option data-pinyin="tzz"  data-level="3" value="360103" >特种纸(2)</option>
+        <option data-pinyin="bzys"  data-level="2" value="3602" >包装印刷(3)</option>
+        <option data-pinyin="zbz"  data-level="3" value="360205" >纸包装(2)</option>
+        <option data-pinyin="zhbz"  data-level="3" value="360206" >综合包装(1)</option>
+        <option data-pinyin="jjyp"  data-level="2" value="3603" >家居用品(9)</option>
+        <option data-pinyin="czdb"  data-level="3" value="360306" >瓷砖地板(2)</option>
+        <option data-pinyin="dzjj"  data-level="3" value="360308" >定制家居(4)</option>
+        <option data-pinyin="qtjjyp"  data-level="3" value="360311" >其他家居用品(3)</option>
+        <option data-pinyin="yysw"  data-level="1" value="37" >医药生物(34)</option>
+        <option data-pinyin="hxzy"  data-level="2" value="3701" >化学制药(11)</option>
+        <option data-pinyin="yly"  data-level="3" value="370101" >原料药(7)</option>
+        <option data-pinyin="hxzj"  data-level="3" value="370102" >化学制剂(4)</option>
+        <option data-pinyin="zy"  data-level="2" value="3702" >中药Ⅱ(1)</option>
+        <option data-pinyin="zy"  data-level="3" value="370201" >中药Ⅲ(1)</option>
+        <option data-pinyin="swzp"  data-level="2" value="3703" >生物制品(2)</option>
+        <option data-pinyin="ym"  data-level="3" value="370303" >疫苗(1)</option>
+        <option data-pinyin="qtswzp"  data-level="3" value="370304" >其他生物制品(1)</option>
+        <option data-pinyin="yysy"  data-level="2" value="3704" >医药商业(6)</option>
+        <option data-pinyin="yylt"  data-level="3" value="370402" >医药流通(3)</option>
+        <option data-pinyin="xxyd"  data-level="3" value="370403" >线下药店(3)</option>
+        <option data-pinyin="ylqx"  data-level="2" value="3705" >医疗器械(13)</option>
+        <option data-pinyin="ylsb"  data-level="3" value="370502" >医疗设备(5)</option>
+        <option data-pinyin="ylhc"  data-level="3" value="370503" >医疗耗材(4)</option>
+        <option data-pinyin="twzd"  data-level="3" value="370504" >体外诊断(4)</option>
+        <option data-pinyin="ylfw"  data-level="2" value="3706" >医疗服务(1)</option>
+        <option data-pinyin="ylyfwb"  data-level="3" value="370603" >医疗研发外包(1)</option>
+        <option data-pinyin="gysy"  data-level="1" value="41" >公用事业(14)</option>
+        <option data-pinyin="dl"  data-level="2" value="4101" >电力(9)</option>
+        <option data-pinyin="slfd"  data-level="3" value="410102" >水力发电(1)</option>
+        <option data-pinyin="rlfw"  data-level="3" value="410104" >热力服务(1)</option>
+        <option data-pinyin="gffd"  data-level="3" value="410106" >光伏发电(3)</option>
+        <option data-pinyin="flfd"  data-level="3" value="410107" >风力发电(2)</option>
+        <option data-pinyin="hlfd"  data-level="3" value="410108" >核力发电(1)</option>
+        <option data-pinyin="dnzhfw"  data-level="3" value="410110" >电能综合服务(1)</option>
+        <option data-pinyin="rq"  data-level="2" value="4103" >燃气Ⅱ(5)</option>
+        <option data-pinyin="rq"  data-level="3" value="410301" >燃气Ⅲ(5)</option>
+        <option data-pinyin="jtys"  data-level="1" value="42" >交通运输(6)</option>
+        <option data-pinyin="wl"  data-level="2" value="4208" >物流(4)</option>
+        <option data-pinyin="kd"  data-level="3" value="420804" >快递(1)</option>
+        <option data-pinyin="kjwl"  data-level="3" value="420805" >跨境物流(1)</option>
+        <option data-pinyin="ccwl"  data-level="3" value="420806" >仓储物流(2)</option>
+        <option data-pinyin="hkjc"  data-level="2" value="4210" >航空机场(1)</option>
+        <option data-pinyin="hkys"  data-level="3" value="421001" >航空运输(1)</option>
+        <option data-pinyin="hygk"  data-level="2" value="4211" >航运港口(1)</option>
+        <option data-pinyin="hy"  data-level="3" value="421101" >航运(1)</option>
+        <option data-pinyin="smls"  data-level="1" value="45" >商贸零售(3)</option>
+        <option data-pinyin="my"  data-level="2" value="4502" >贸易Ⅱ(1)</option>
+        <option data-pinyin="my"  data-level="3" value="450201" >贸易Ⅲ(1)</option>
+        <option data-pinyin="ybls"  data-level="2" value="4503" >一般零售(1)</option>
+        <option data-pinyin="cs"  data-level="3" value="450302" >超市(1)</option>
+        <option data-pinyin="zyls"  data-level="2" value="4504" >专业连锁Ⅱ(1)</option>
+        <option data-pinyin="zyls"  data-level="3" value="450401" >专业连锁Ⅲ(1)</option>
+        <option data-pinyin="shfw"  data-level="1" value="46" >社会服务(1)</option>
+        <option data-pinyin="zyfw"  data-level="2" value="4608" >专业服务(1)</option>
+        <option data-pinyin="jcfw"  data-level="3" value="460802" >检测服务(1)</option>
+        <option data-pinyin="yh"  data-level="1" value="48" >银行(6)</option>
+        <option data-pinyin="gfzyh"  data-level="2" value="4803" >股份制银行Ⅱ(1)</option>
+        <option data-pinyin="gfzyh"  data-level="3" value="480301" >股份制银行Ⅲ(1)</option>
+        <option data-pinyin="csh"  data-level="2" value="4804" >城商行Ⅱ(2)</option>
+        <option data-pinyin="csh"  data-level="3" value="480401" >城商行Ⅲ(2)</option>
+        <option data-pinyin="nsh"  data-level="2" value="4805" >农商行Ⅱ(3)</option>
+        <option data-pinyin="nsh"  data-level="3" value="480501" >农商行Ⅲ(3)</option>
+        <option data-pinyin="fyjr"  data-level="1" value="49" >非银金融(2)</option>
+        <option data-pinyin="zq"  data-level="2" value="4901" >证券Ⅱ(2)</option>
+        <option data-pinyin="zq"  data-level="3" value="490101" >证券Ⅲ(2)</option>
+        <option data-pinyin="jzcl"  data-level="1" value="61" >建筑材料(6)</option>
+        <option data-pinyin="sn"  data-level="2" value="6101" >水泥(2)</option>
+        <option data-pinyin="snzz"  data-level="3" value="610101" >水泥制造(2)</option>
+        <option data-pinyin="blbx"  data-level="2" value="6102" >玻璃玻纤(2)</option>
+        <option data-pinyin="bxzz"  data-level="3" value="610202" >玻纤制造(2)</option>
+        <option data-pinyin="zxjc"  data-level="2" value="6103" >装修建材(2)</option>
+        <option data-pinyin="qtjc"  data-level="3" value="610303" >其他建材(1)</option>
+        <option data-pinyin="fscl"  data-level="3" value="610304" >防水材料(1)</option>
+        <option data-pinyin="jzzs"  data-level="1" value="62" >建筑装饰(15)</option>
+        <option data-pinyin="fwjs"  data-level="2" value="6201" >房屋建设Ⅱ(1)</option>
+        <option data-pinyin="fwjs"  data-level="3" value="620101" >房屋建设Ⅲ(1)</option>
+        <option data-pinyin="zxzs"  data-level="2" value="6202" >装修装饰Ⅱ(1)</option>
+        <option data-pinyin="zxzs"  data-level="3" value="620201" >装修装饰Ⅲ(1)</option>
+        <option data-pinyin="jcjs"  data-level="2" value="6203" >基础建设(6)</option>
+        <option data-pinyin="jjszgc"  data-level="3" value="620306" >基建市政工程(3)</option>
+        <option data-pinyin="ylgc"  data-level="3" value="620307" >园林工程(3)</option>
+        <option data-pinyin="zygc"  data-level="2" value="6204" >专业工程(5)</option>
+        <option data-pinyin="gjg"  data-level="3" value="620401" >钢结构(4)</option>
+        <option data-pinyin="hxgc"  data-level="3" value="620402" >化学工程(1)</option>
+        <option data-pinyin="gczxfw"  data-level="2" value="6206" >工程咨询服务Ⅱ(2)</option>
+        <option data-pinyin="gczxfw"  data-level="3" value="620601" >工程咨询服务Ⅲ(2)</option>
+        <option data-pinyin="dlsb"  data-level="1" value="63" >电力设备(36)</option>
+        <option data-pinyin="qtdysb"  data-level="2" value="6303" >其他电源设备Ⅱ(1)</option>
+        <option data-pinyin="qtdysb"  data-level="3" value="630306" >其他电源设备Ⅲ(1)</option>
+        <option data-pinyin="gfsb"  data-level="2" value="6305" >光伏设备(15)</option>
+        <option data-pinyin="glgp"  data-level="3" value="630501" >硅料硅片(2)</option>
+        <option data-pinyin="gfdczj"  data-level="3" value="630502" >光伏电池组件(4)</option>
+        <option data-pinyin="nbq"  data-level="3" value="630503" >逆变器(1)</option>
+        <option data-pinyin="gffc"  data-level="3" value="630504" >光伏辅材(5)</option>
+        <option data-pinyin="gfjgsb"  data-level="3" value="630505" >光伏加工设备(3)</option>
+        <option data-pinyin="fdsb"  data-level="2" value="6306" >风电设备(3)</option>
+        <option data-pinyin="fdlbj"  data-level="3" value="630602" >风电零部件(3)</option>
+        <option data-pinyin="dc"  data-level="2" value="6307" >电池(10)</option>
+        <option data-pinyin="ldc"  data-level="3" value="630701" >锂电池(3)</option>
+        <option data-pinyin="dchxp"  data-level="3" value="630702" >电池化学品(7)</option>
+        <option data-pinyin="dwsb"  data-level="2" value="6308" >电网设备(7)</option>
+        <option data-pinyin="sbdsb"  data-level="3" value="630801" >输变电设备(3)</option>
+        <option data-pinyin="dwzdhsb"  data-level="3" value="630803" >电网自动化设备(1)</option>
+        <option data-pinyin="dgyqyb"  data-level="3" value="630804" >电工仪器仪表(1)</option>
+        <option data-pinyin="xlbjjqt"  data-level="3" value="630805" >线缆部件及其他(2)</option>
+        <option data-pinyin="jxsb"  data-level="1" value="64" >机械设备(25)</option>
+        <option data-pinyin="tysb"  data-level="2" value="6401" >通用设备(10)</option>
+        <option data-pinyin="mjml"  data-level="3" value="640103" >磨具磨料(1)</option>
+        <option data-pinyin="zlktsb"  data-level="3" value="640105" >制冷空调设备(1)</option>
+        <option data-pinyin="qttysb"  data-level="3" value="640106" >其他通用设备(2)</option>
+        <option data-pinyin="yqyb"  data-level="3" value="640107" >仪器仪表(4)</option>
+        <option data-pinyin="jszp"  data-level="3" value="640108" >金属制品(2)</option>
+        <option data-pinyin="zysb"  data-level="2" value="6402" >专用设备(9)</option>
+        <option data-pinyin="nyjzxsb"  data-level="3" value="640203" >能源及重型设备(3)</option>
+        <option data-pinyin="fzfzsb"  data-level="3" value="640206" >纺织服装设备(1)</option>
+        <option data-pinyin="ysbzjx"  data-level="3" value="640208" >印刷包装机械(1)</option>
+        <option data-pinyin="qtzysb"  data-level="3" value="640209" >其他专用设备(4)</option>
+        <option data-pinyin="gjsb"  data-level="2" value="6405" >轨交设备Ⅱ(2)</option>
+        <option data-pinyin="gjsb"  data-level="3" value="640501" >轨交设备Ⅲ(2)</option>
+        <option data-pinyin="gcjx"  data-level="2" value="6406" >工程机械(2)</option>
+        <option data-pinyin="gcjxzj"  data-level="3" value="640601" >工程机械整机(1)</option>
+        <option data-pinyin="gcjxqj"  data-level="3" value="640602" >工程机械器件(1)</option>
+        <option data-pinyin="zdhsb"  data-level="2" value="6407" >自动化设备(2)</option>
+        <option data-pinyin="jqr"  data-level="3" value="640701" >机器人(1)</option>
+        <option data-pinyin="qtzdhsb"  data-level="3" value="640704" >其他自动化设备(1)</option>
+        <option data-pinyin="gfjg"  data-level="1" value="65" >国防军工(5)</option>
+        <option data-pinyin="hkzb"  data-level="2" value="6502" >航空装备Ⅱ(4)</option>
+        <option data-pinyin="hkzb"  data-level="3" value="650201" >航空装备Ⅲ(4)</option>
+        <option data-pinyin="jgdz"  data-level="2" value="6505" >军工电子Ⅱ(1)</option>
+        <option data-pinyin="jgdz"  data-level="3" value="650501" >军工电子Ⅲ(1)</option>
+        <option data-pinyin="jsj"  data-level="1" value="71" >计算机(14)</option>
+        <option data-pinyin="jsjsb"  data-level="2" value="7101" >计算机设备(4)</option>
+        <option data-pinyin="afsb"  data-level="3" value="710102" >安防设备(1)</option>
+        <option data-pinyin="qtjsjsb"  data-level="3" value="710103" >其他计算机设备(3)</option>
+        <option data-pinyin="ITfw"  data-level="2" value="7103" >IT服务Ⅱ(2)</option>
+        <option data-pinyin="ITfw"  data-level="3" value="710301" >IT服务Ⅲ(2)</option>
+        <option data-pinyin="rjkf"  data-level="2" value="7104" >软件开发(8)</option>
+        <option data-pinyin="czyyrj"  data-level="3" value="710401" >垂直应用软件(6)</option>
+        <option data-pinyin="hxtyrj"  data-level="3" value="710402" >横向通用软件(2)</option>
+        <option data-pinyin="cm"  data-level="1" value="72" >传媒(2)</option>
+        <option data-pinyin="yx"  data-level="2" value="7204" >游戏Ⅱ(1)</option>
+        <option data-pinyin="yx"  data-level="3" value="720401" >游戏Ⅲ(1)</option>
+        <option data-pinyin="szmt"  data-level="2" value="7207" >数字媒体(1)</option>
+        <option data-pinyin="qtszmt"  data-level="3" value="720706" >其他数字媒体(1)</option>
+        <option data-pinyin="tx"  data-level="1" value="73" >通信(3)</option>
+        <option data-pinyin="txfw"  data-level="2" value="7301" >通信服务(2)</option>
+        <option data-pinyin="txgcjfw"  data-level="3" value="730103" >通信工程及服务(1)</option>
+        <option data-pinyin="txyyzzfw"  data-level="3" value="730104" >通信应用增值服务(1)</option>
+        <option data-pinyin="txsb"  data-level="2" value="7302" >通信设备(1)</option>
+        <option data-pinyin="txxljpt"  data-level="3" value="730205" >通信线缆及配套(1)</option>
+        <option data-pinyin="mt"  data-level="1" value="74" >煤炭(3)</option>
+        <option data-pinyin="mtkc"  data-level="2" value="7401" >煤炭开采(2)</option>
+        <option data-pinyin="dlm"  data-level="3" value="740101" >动力煤(1)</option>
+        <option data-pinyin="jm"  data-level="3" value="740102" >焦煤(1)</option>
+        <option data-pinyin="jt"  data-level="2" value="7402" >焦炭Ⅱ(1)</option>
+        <option data-pinyin="jt"  data-level="3" value="740201" >焦炭Ⅲ(1)</option>
+        <option data-pinyin="sysh"  data-level="1" value="75" >石油石化(3)</option>
+        <option data-pinyin="lhjmy"  data-level="2" value="7503" >炼化及贸易(3)</option>
+        <option data-pinyin="lyhg"  data-level="3" value="750301" >炼油化工(2)</option>
+        <option data-pinyin="qtsh"  data-level="3" value="750303" >其他石化(1)</option>
+        <option data-pinyin="hb"  data-level="1" value="76" >环保(14)</option>
+        <option data-pinyin="hjzl"  data-level="2" value="7601" >环境治理(12)</option>
+        <option data-pinyin="swjszl"  data-level="3" value="760102" >水务及水治理(5)</option>
+        <option data-pinyin="gfzl"  data-level="3" value="760103" >固废治理(6)</option>
+        <option data-pinyin="zhhjzl"  data-level="3" value="760104" >综合环境治理(1)</option>
+        <option data-pinyin="hbsb"  data-level="2" value="7602" >环保设备Ⅱ(2)</option>
+        <option data-pinyin="hbsb"  data-level="3" value="760201" >环保设备Ⅲ(2)</option>
+        <option data-pinyin="mrhl"  data-level="1" value="77" >美容护理(3)</option>
+        <option data-pinyin="hzp"  data-level="2" value="7702" >化妆品(3)</option>
+        <option data-pinyin="hzpzzjqt"  data-level="3" value="770201" >化妆品制造及其他(1)</option>
+        <option data-pinyin="pphzp"  data-level="3" value="770202" >品牌化妆品(2)</option>
+    </select>
+板块
+(<label style="display:inline;margin-left:0px;"><input onclick="reloadConvertBondSearch()" type="checkbox" id="market_shmb" checked>沪主板</label>
+<label style="display:inline;margin-left:0px;"><input onclick="reloadConvertBondSearch()" type="checkbox" id="market_shkc" checked>沪科创</label>
+<label style="display:inline;margin-left:0px;"><input onclick="reloadConvertBondSearch()" type="checkbox" id="market_szmb" checked>深主板</label>
+<label style="display:inline;margin-left:0px;"><input onclick="reloadConvertBondSearch()" type="checkbox" id="market_szcy" checked>深创业</label>
+<label style="display:inline;margin-left:0px;"><input onclick="reloadConvertBondSearch()" type="checkbox" id="market_sb">老三板</label>)
+
+<label style="display: inline; margin-left: 10px;"><input onclick="reloadConvertBondSearch();" id="ctype"  type="checkbox" checked>可转债</label>
+<label style="display: inline;"><input onclick="reloadConvertBondSearch();" id="etype"  type="checkbox" checked>交换债</label>
+<label style="display: inline; margin-left: 10px;"><input onclick="reloadConvertBondSearch();" id="listed" type="checkbox" checked>仅看已上市</label>
+<label style="display: inline;"><input onclick="reloadConvertBondSearch();" id="qflag"  type="checkbox">合格机构可买</label>
+
+<label style="display: inline; margin-left: 10px;"><input onclick="reloadConvertBondSearch(this);" id="owned"  type="checkbox">仅看自选</label>
+<label style="display: inline;"><input onclick="reloadConvertBondSearch(this);" id="holded"  type="checkbox">仅看持仓</label>
+<span style="float: right;line-height: 28px;" id="convertBondCount"></span>
+</div>
+
+
+<div id="tableConvertBondOwnedTitle">
+自选可转债(<a href="javascript:tableConvertBondOwned.reload();">刷新</a>)
+</div>
+
+<div id="tableConvertBondAdjustTitle">
+下修(<a href="javascript:showAdjust();">刷新</a> ) &nbsp;&nbsp;&nbsp;&nbsp;
+<label style="display:inline;margin-left:10px;" for="adjust_search_form_nearly"><input id="adjust_search_form_nearly" type="checkbox" name="nearly" onclick="showAdjust()" title="仅显示至少还需要1天到3天满足下修的转债">仅看临近满足下修条件转债</label>
+</div>
+</div>
+
+</div>
+<script type="text/javascript" src="/static/js/multiple-select.v1.5.2.min.js"></script>
+<script type="text/javascript" src="/static/js/multiple-select-zh-CN.v1.5.2.min.js"></script>
+<script type="text/javascript" src="/static/js/select2.full.v4.0.13.min.js"></script>
+<script type="text/javascript">
+var owned_user_id = "1098224";
+var user_id = owned_user_id;
+var is_member = 0;
+var date = '2026-04-28'
+
+function gotoNew() {
+	localStorage.setItem('data-cb-version', 'new')
+    document.location.href = '/web/data/cb/list'
+}
+
+function bindAutoCheckbox() {
+    if (!is_member){
+        var list = $('[data-toggle="tooltip"]');
+        list.attr('title','自动刷新购买会员可用');
+        $('input',list).prop("checked",false);
+    } 
+}
+
+function optionValueFormatter(nameVal, row){
+	var option_value = row.option_value;
+	if('Y' == row.adjusted){
+		option_value = option_value + '<sup>*</sup>';
+	}
+	return option_value;
+}
+
+function yearLeftFormatter(nameVal, row){
+    if (!row['year_left'] || (row['icons'].hasOwnProperty('R') && row['real_force_redeem_price'] && row['redeem_dt'])) return '-';
+	else if (parseFloat(row['year_left']) < 0.165) {
+        let m = new Date(row['maturity_dt']);
+        let t = new Date(date);
+        if (m - t > 0) {
+          let day = (m - t) / 1000 / 86400;
+          return day <= 60 ? day + '天' : parseFloat(row['year_left']).toFixed(2) + '年';
+        } else {
+          return parseFloat(row['year_left']).toFixed(2) + '年';
+        }
+	} else {
+		return parseFloat(row['year_left']).toFixed(2) + '年';
+	}
+}
+
+function redeemValueStyler(nameVal, row){
+    if('B' == row.redeem_icon || 'O' == row.redeem_icon || row.icons.hasOwnProperty('B') || row.icons.hasOwnProperty('O')){
+        return ';color:#aaa;font-style:italic;';
+    }
+}
+
+function optionValueStyler(nameVal, row){
+    // if(row.redeem_dt && row.real_force_redeem_price){
+    //     return ';color:#aaa;font-style:italic;';
+    // }
+    if('B' == row.redeem_icon || 'O' == row.redeem_icon || row.icons.hasOwnProperty('B') || row.icons.hasOwnProperty('O')){
+        return ';color:#aaa;font-style:italic;';
+    }
+    if('N' == row.convert_price_valid){
+        return ';color:#aaaaaa;font-style:italic';
+    }
+}
+
+function theoryValueStyler(nameVal, row){
+    if('N' == row.convert_price_valid){
+        return ';color:#aaaaaa;font-style:italic';
+    }
+}
+
+function redeemStyler(nameVal, row){
+	if(row.redeem_dt && row.real_force_redeem_price){
+		return ';color:#aaa;font-style:italic;';
+	}
+}
+
+function putStyler(nameVal, row){
+	if('Y' == row.putting){
+		return ';font-weight:bolder;';
+	}
+	if(row.after_next_put_dt){
+		if(row.put_convert_price && row.sprice && parseFloat(row.put_convert_price) > parseFloat(row.sprice)){
+			return '';
+		}
+	}
+	return ';color:#aaa;font-style:italic;';
+}
+function convertShortDateFormatter(nameVal, row){
+	return row.maturity_dt && row.maturity_dt.length == 10 ? row.maturity_dt.substring(2) : '-';
+}
+
+function buyOptionValueFormatter(nameVal, row){
+	return '<a target="_blank" title="会员数据，点击购买会员" href="/setting/member/">会员</a>';
+}
+
+function premiumRtStyler(nameVal, row){
+	if(row.convert_dt || 'N' == row.convert_price_valid){
+		return ';color:#aaaaaa;font-style:italic';
+	}
+}
+
+function cbDebtRateFormatter(nameVal, row){
+	if('buy' == row.debt_rate){
+		return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+	}else{
+		return row.debt_rate;
+	}
+}
+
+function cbFundRtFormatter(nameVal, row){
+	if('buy' == row.fund_rt){
+		return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+	}else{
+		return row.fund_rt;
+	}
+}
+
+function bondValueFormatter(nameVal, row){
+    if('buy' == row.bond_value){
+        return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+    }else{
+        return row.bond_value;
+    }
+}
+
+function volatilityRateFormatter(nameVal, row){
+    if('buy' == row.volatility_rate){
+        return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+    }else{
+        return row.volatility_rate;
+    }
+}
+
+
+function convertPriceFormatter(nameVal, row){
+    var style = '';
+	if('N' == row.convert_price_valid){
+		style = 'style="color:#aaaaaa;font-style:italic;"';
+	}
+	if(row.adj_cnt > 0){
+        var cnt = parseInt(row.adj_scnt);
+        var starts = '<span style="color:red;">'+ '*****'.substring(0,row.adj_scnt) + '</span>';
+        return '<a '+style+' title="'+row.convert_price_tips+'" class="adj_cnt_tips" adj_type="D" bond_nm="' + row.bond_nm + '" bond_id="' + row.bond_id + '">' + row.convert_price + starts + '</a>';
+	}else{
+        return '<span '+style+' title="' + row.convert_price_tips + '">' + row.convert_price + '</span>';
+	}
+}
+
+function convertPriceStyler(nameVal, row){
+    if('N' == row.convert_price_valid){
+        return ';color:#aaaaaa;font-style:italic';
+    }
+}
+
+function bondAdjCntTips(data){
+    $('.adj_cnt_tips').each(function() {
+        var $el = $(this);
+        var bond_id = $el.attr('bond_id');
+        var bond_nm = $el.attr('bond_nm');
+        var adj_type = $el.attr('adj_type');
+        var adj_nm = '';
+        if('U' == adj_type){
+        	adj_nm = '不';
+        }
+        $el.click(function(){
+			$.ajax({
+				type: "GET",
+				url: G_BASE_URL + '/data/cbnew/adj_logs/?bond_id=' + bond_id + '&adj_type=' + adj_type,
+				success: function(logs, textStatus) {
+					if (logs != null)
+					{
+						$('#dataModalLabel').html(bond_nm + '[' + bond_id + '] 转股价' + adj_nm + '下修记录');
+						$('#dataModalBody').html(logs);
+						$('#dataModal').modal('show');
+					}
+				}
+			});
+        });
+    });
+}
+
+function doAfterConvertBondShow(data){
+	if(cbSearchCnd && !cb_search_cnd_synced){
+		syncCbSearchCnd();
+		cb_search_cnd_synced = true;
+	}
+	if('Y' == is_cb_search){
+		if(!$('.search_cnd').hasClass('search_cnd_red')){
+			$('.search_cnd').addClass('search_cnd_red');
+		}
+	}else{
+		if($('.search_cnd').hasClass('search_cnd_red')){
+			$('.search_cnd').removeClass('search_cnd_red');
+		}
+	}
+	if(data['blocked']>0){
+		$('#blocked_count').text('('+ data['blocked'] + ')');
+	}else{
+		$('#blocked_count').text('');
+	}
+    var total_orig_iss_amt = 0;
+    var total_curr_iss_amt = 0;
+    $(data['rows']).each(function(idx, row) {
+        var orig_iss_amt = 0;
+        if(!isNaN(parseFloat(row['cell']['orig_iss_amt']))){
+            orig_iss_amt = parseFloat(row['cell']['orig_iss_amt']);
+        }
+        var curr_iss_amt = orig_iss_amt;
+        if(row['cell']['curr_iss_amt'] && !isNaN(parseFloat(row['cell']['curr_iss_amt']))){
+            curr_iss_amt = parseFloat(row['cell']['curr_iss_amt']);
+        }
+        total_orig_iss_amt += orig_iss_amt;
+        total_curr_iss_amt += curr_iss_amt;
+    });
+
+	$('#convertBondCount').html('数量:<span title="满足当前筛选条件的转债数量">' + data['total'] + '</span>/<span title="总计转债数量，含已发行待上市转债">' + data['all'] + '</span>个；<span title="发行规模，按面值计算">规模:' + total_orig_iss_amt.toFixed(2) + '亿</span>；<span title="剩余规模，按面值计算">存量:' + total_curr_iss_amt.toFixed(2) + '亿</span>');
+
+	bondAdjCntTips(data);
+
+    $('.jsl_cb_notes').each(function() {
+        var $el = $(this);
+        var bond_id = $el.attr('bond_id');
+        var bond_nm = $el.attr('bond_nm');
+        $el.click(function(){
+			$.ajax({
+				type: "GET",
+				url: G_BASE_URL + '/data/cbnew/note/?bond_id=' + bond_id,
+				success: function(data,textStatus) {
+					if (data != null)
+					{
+						$('#dataModalLabel').html(bond_nm + '[' + bond_id + '] 备注');
+						$('#dataModalBody').html(data);
+						$('#dataModal').modal('show');
+					}
+				}
+			});
+        });
+    });
+
+    $('#sw_cd').select2({
+        templateResult: function(opt){
+            if(!opt.id || !opt.element){
+                return opt.text;
+            }
+            var level = opt.element.dataset.level;
+            var tmp = '<span style="display:inline-block;width:160px" class="industry_level' + level + '">' + opt.text + '</span>';
+            return $('<span>' + tmp + '</span>');
+        },
+        matcher: function(params, data){
+            if ($.trim(params.term) === '') {
+              return data;
+            }
+
+            if (typeof data.text === 'undefined') {
+              return null;
+            }
+
+            var pinyin = data.element.dataset.pinyin;
+            if(!pinyin){
+                pinyin = '';
+            }
+            if (data.text.indexOf(params.term) > -1 || pinyin.indexOf(params.term) > -1) {
+              return data;
+            }
+
+            return null;
+        }
+    });
+
+	$('#flex_cb [data-toggle="tooltip"]').tooltip();
+
+	autoReloadConvertBondTable(tableConvertBond, 'auto_reload', 'auto_reload');
+
+}
+
+function convertBondNameStyler(nameVal, row){
+	if(row.hold){
+		return ';color:#ff8c00';
+	}else if(row.owned){
+		return ';color:red';
+	}else if(row.blocked){
+		return ';text-decoration: line-through;color: #d3d3d3;';
+	}
+	return '';
+}
+
+function cbIncreaseRtformatter(nameVal, row){
+    if(row.qstatus != '00' && '0.00%' == row.increase_rt){
+        return '停牌';
+    }
+    return row[nameVal];
+}
+
+function cbStocknmFormatter(nameVal, row){
+    var s = '<a href="/data/stock/' + row.stock_id + '" target="_blank">' + row.stock_nm + '</a>';
+    if(('margin_flg' in row && row.margin_flg == 'R') || ('icons' in row && row.icons.hasOwnProperty('M'))){
+        s += ' <sup style="font-size:10px;color:#FFA500;" title="融资融券标的">R</sup>';
+    }
+    return s;
+}
+
+function cbPBFormatter(nameVal, row){
+    var s = row.pb;
+    if('Y' == row.pb_flag){
+        s = '<span title="股东权益含优先股和永续债，PB值与其它平台计算会存在差异" style="color:#aaaaaa;font-style:italic">' + s + '</span>';
+    }
+    return s;
+}
+
+is_cb_search = "Y";
+bond_ids = "";
+
+var cb_search_cnd_inited = false;
+var cb_search_cnd_synced = false;
+var cbSearchCnd = null;
+
+function syncCbSearchCnd(){
+	if(!cbSearchCnd['btype']){
+		$('#ctype').prop('checked', true);
+		$('#etype').prop('checked', true);
+	}else if('C' == cbSearchCnd['btype']){
+		$('#ctype').prop('checked', true);
+		$('#etype').prop('checked', false);
+	}else if('E' == cbSearchCnd['btype']){
+		$('#ctype').prop('checked', false);
+		$('#etype').prop('checked', true);
+	}
+
+	if('Y' == cbSearchCnd['listed']){
+		$('#listed').prop('checked', true);
+	}else{
+		$('#listed').prop('checked', false);
+	}
+
+	if('Y' == cbSearchCnd['qflag']){
+		$('#qflag').prop('checked', true);
+	}else{
+		$('#qflag').prop('checked', false);
+	}
+
+	if(!cbSearchCnd['market_cd'] || $.inArray('shmb', cbSearchCnd['market_cd']) > -1){
+		$('#market_shmb').prop('checked', true);
+	}else{
+		$('#market_shmb').prop('checked', false);
+	}
+
+	if(!cbSearchCnd['market_cd'] || $.inArray('shkc', cbSearchCnd['market_cd']) > -1){
+		$('#market_shkc').prop('checked', true);
+	}else{
+		$('#market_shkc').prop('checked', false);
+	}
+
+	if(!cbSearchCnd['market_cd'] || $.inArray('szmb', cbSearchCnd['market_cd']) > -1){
+		$('#market_szmb').prop('checked', true);
+	}else{
+		$('#market_szmb').prop('checked', false);
+	}
+
+	if(!cbSearchCnd['market_cd'] || $.inArray('szcy', cbSearchCnd['market_cd']) > -1){
+		$('#market_szcy').prop('checked', true);
+	}else{
+		$('#market_szcy').prop('checked', false);
+	}
+
+	if(!cbSearchCnd['market_cd'] || $.inArray('sb', cbSearchCnd['market_cd']) > -1){
+		$('#market_sb').prop('checked', true);
+	}else{
+		$('#market_sb').prop('checked', false);
+	}
+}
+
+function convertBondPriceFormatter(nameVal, row){
+	var price = row.price;
+	if(1==row.is_min_price){
+		price = '<span title="历史低价" style="color:#00CED1">' + price + '</span>';
+	}
+	return price;
+}
+
+function forceRedeemPriceFormatter(nameVal, row){
+	var price = '';
+	if(row.force_redeem_price){
+		price = row.force_redeem_price.toFixed(3);
+	}
+	if(row.force_redeem_price_tip){
+		price = '<span title="非130%的强赎触发比：' + row.force_redeem_price_tip + '" style="color:#FFA500">' + price + '</span> ';
+	}
+	return price;
+}
+
+function showConvertBond(){
+	if(!cb_search_cnd_inited){
+		if(G_USER_ID > 0){
+			var filters = localStorage.getItem('data-cb-filters:'+G_USER_ID);
+			if(filters){
+				filters = JSON.parse(filters);
+				cbSearchCnd = {};
+				if(filters['listed']){
+					cbSearchCnd['listed'] = 'Y';
+				}
+				if(filters['qflag']){
+					cbSearchCnd['qflag'] = 'Y';
+				}
+				cbSearchCnd['btype'] = '';
+				if('c' == filters['type']){
+					cbSearchCnd['btype'] = 'C';
+				}else if('e' == filters['type']){
+					cbSearchCnd['btype'] = 'E';
+				}
+				cbSearchCnd['market_cd'] = filters['market_cd'];
+				syncCbSearchCnd();
+			}else{
+				resetConvertBondSearch();
+			}
+		}
+		cb_search_cnd_inited = true;
+	}
+	var cnd = fillConvertBondSearchCnd(is_cb_search);
+	if(!tableConvertBond){
+		tableConvertBond = new SimpleTableBuilder({
+			afterShow: doAfterConvertBondShow,
+			tid: 'flex_cb',
+			async: true,
+			rp: 50,
+			cols: [
+				{display: '状态', name : 'status_cd', width : 30, img : true, tooltip:'注：{{status_txt}}',hidden: true},
+				{display: '代&nbsp;码', title:'转债代码', name : 'bond_id', width : 40,tooltip:'债项评级：{{rating_cd}}',formatter:convertBondDetailLinkFormatter, nowrap : true, align:'center'},
+				{display: '转债名称', title:'转债名称', name : 'bond_nm', width : 58, nowrap : true, formatter:convertBondNameFormatter, styler:convertBondNameStyler},
+				{display: '现&nbsp;价', title:'转债现价', name : 'price', width : 40, tooltip:'{{price_tips}}', nowrap : true, percentage:false, precision:3, maxLength:6, formatter:convertBondPriceFormatter, styler:convertBondPriceStyler, align:'right'},
+				{display: '涨跌幅', title:'转债涨跌幅', name : 'increase_rt', width : 40, color:true, nowrap : true, percentage:true, precision:2, maxLength:6, formatter:cbIncreaseRtformatter, styler:convertBondPriceStyler, sorter:'percentSorter', align:'right'},
+				{display: '正股名称', title:'正股名称', name : 'stock_nm', width : 50,tooltip:'代码：{{stock_id}}', nowrap : true, formatter:cbStocknmFormatter},
+				{display: '正股价', title:'正股现价', name : 'sprice', width : 35, nowrap : true, tooltip:'正股成交额：{{svolume}}万元',percentage:false, precision:2, maxLength:6, align:'right'},
+				{display: '正股<br>涨跌', title:'正股涨跌幅', name : 'sincrease_rt', width : 40, color:true, nowrap : true, sorter:'percentSorter',percentage:true, precision:2, maxLength:5, align:'right'},
+				//{display: '净资产', title:'正股净资产', name : 'stock_net_value', width : 40},
+				{display: '正股<br>PB', title:'正股市净率', name : 'pb', width : 35, nowrap : true, precision:2, maxLength:6, formatter:cbPBFormatter, tooltip:'{{lt_bps}}', align:'right'},
+				{display: '转股价', title:'最新转股价', name : 'convert_price', width : 40, nowrap : true, precision:2, maxLength:6, formatter:convertPriceFormatter, align:'right'},
+				{display: '转股<br>价值', name : 'convert_value', width : 40,tooltip:'转股代码：{{convert_cd_tip}}', nowrap : true, precision:2, styler:convertPriceStyler, align:'right'},
+				{display: '转股<br>溢价率', name : 'premium_rt', width : 40,tooltip:'转股代码：{{convert_cd_tip}}', bgcolor:'yellow', nowrap : true, percentage:true, precision:2, maxLength:6, styler: premiumRtStyler, align:'right'},
+                {display: '参考YTM', name : 'ref_yield_info',hidden: true},
+				{display: '纯债<br>价值', title:'纯债价值，税前', name : 'bond_value', width : 35, nowrap : true, precision:2, styler:redeemValueStyler, formatter:bondValueFormatter, tooltip:'{{ref_yield_info}}', align:'right'},
+				{display: '债底<br>溢价率', title:'债底溢价率 = (转债价格 - 纯债价值)/纯债价值 * 100%', name : 'bond_premium_rt', width : 35, nowrap : true, precision:2, percentage:true, styler:redeemValueStyler, tooltip:'{{ref_yield_info}}', align:'right'},
+				{display: '债券<br>评级', name:'rating_cd', width : 35, nowrap : true, sorter:'ratingCode'},
+				{display: '期权<br>价值', title:'转股价的看涨期权价值', name : '_option_value', width : 35, nowrap : true, precision:2, formatter:buyOptionValueFormatter, align:'right'},
+                {display: '正股<br>波动率', title:'正股最近一年的平均日【普通收益率】标准差年化值', name : 'volatility_rate', width : 40, nowrap : true, percentage:true, precision:2, maxLength:5, formatter:volatilityRateFormatter, align:'right'},
+				{display: '回售<br>触发价', name:'put_convert_price', width:35,tooltip:'回售起始：{{next_put_dt}}', nowrap : true, precision:3, align:'right'},
+				{display: '强赎<br>触发价', title:'通常为转股价*130%，少数例外', name:'_force_redeem_price', width:35, nowrap : true, precision:3, formatter:forceRedeemPriceFormatter, align:'right', sortValue:'force_redeem_price'},
+				{display: '转债<br>占比', title:'转债余额/流通市值', name:'convert_amt_ratio', width:35,tooltip:'{{convert_amt_ratio_tips}}', nowrap : true, percentage:true, precision:2, maxLength:4, align:'right'},
+				{display: '资产<br>负债率', title:'资产负债率=负债合计/负债和所有者权益合计 * 100%', name:'debt_rate', width:45,nowrap : true, percentage:true, precision:2, formatter:cbDebtRateFormatter, align:'right'},
+				{display: '基金<br>持仓', name:'fund_rt', width:35, nowrap : true, percentage:true, precision:2, maxLength:4, formatter:cbFundRtFormatter, align:'right'},
+				{display: '到期时间', name : 'maturity_dt', width : 55, nowrap : true, styler:redeemStyler, sorter: 'shortDateSorter', formatter:convertShortDateFormatter, align:'center'},
+				{display: '剩余<br>年限', name : 'year_left', width : 35, styler:redeemStyler, nowrap : true, precision:2, maxLength:5, formatter:yearLeftFormatter, align:'right',sortValue:'year_left',sorter:'numericSorter' },
+                {display: '剩余规模<br>(亿元)', name : 'curr_iss_amt', tooltip:'按转债面值计算', width : 55, nowrap : true, precision:3, align:'right'},
+                {display: '成交额<br>(万元)', title:'成交额', name : 'volume', width : 50, nowrap : true, tooltip :'正股成交额：{{svolume}}万元', precision:2, align:'right'},
+                {display: '换手率', name : 'turnover_rt', width : 55, nowrap : true, percentage:true, precision:2, align:'right'},
+				{display: '到期<br>税前收益', title:'到期税前收益率', name : 'ytm_rt', width : 45, bgcolor:'yellow', styler:redeemStyler, nowrap : true, percentage:true, precision:2, maxLength:5, align:'right'},
+				{display: '到期<br>税后收益', title:'到期税后收益率', name : 'ytm_rt_tax', width : 45, styler:redeemStyler, nowrap : true,hidden: true, align:'right'},
+				{display: '回售<br>收益', title:'回售收益率', name : '_put_ytm_rt', width : 35, nowrap : true, percentage:true, precision:2, maxLength:5, formatter:buyOptionValueFormatter, bgcolor:'yellow', align:'right'},
+                {display: '双低', title:'双低=转债价格+溢价率*100', name : 'dblow', width : 50, nowrap : true, precision:2, maxLength:5, align:'right'},
+				{display: '折算<br>率', title:'标准券折算率', name : 'repo_discount_rt', width : 35,tooltip:'{{repo_valid}}', hidden : true},
+				{display: '最后更新', title:'最后更新', name : 'last_time', width : 40, hidden: true},
+				{display: '状态描述', name : 'status_txt',  hidden: true},
+				{display: '安道全点评', name : 'adq_descr', width : 40, hidden: true},
+				{display: '正股代码', name : 'stock_id',hidden: true},
+				{display: '正股代码', name : 'stock_cd',hidden: true},
+				{display: '预期回售', name : 'estimate_put_dt',hidden: true},
+				{display: '回售说明', name : 'put_notes',hidden: true},
+				{display: '破净下修', name : 'lt_bps',hidden: true},
+				{display: '转债代码', name : 'pre_bond_id',hidden: true},
+				{display: '回售起始', name : 'next_put_dt',hidden: true},
+				{display: '已到回售期', name : 'after_next_put_dt',hidden: true},
+				{display: '质押代码', name : 'repo_cd',hidden: true},
+				{display: '下修情况', name : 'option_tip',hidden: true},
+				{display: '转股代码', name : 'convert_cd',hidden: true},
+                {display: '转股代码提示', name : 'convert_cd_tip',hidden: true},
+				{display: '价格提示', name : 'price_tips',hidden: true},
+				{display: '正股成交额', name : 'svolume',hidden: true},
+				{display: '折算率效期', name:'repo_valid', hidden:true},
+				{display: '下修次数', name:'adj_cnt', hidden:true},
+                {display: '转债占比提示', name:'convert_amt_ratio_tips', hidden:true},
+				{display: '成功下修次数', name:'adj_scnt', hidden:true},
+				{display: '操作', name: 'cbOpt', formatter: cbOptFormatter, width:15,nowrap : true, allowCopy: false, align:'center'}
+			],
+			dataURL: '/data/cbnew/cb_list_new/',
+			title:'#tableConvertBondTitle',
+            copyCallback: function(event) {
+                $(event.currentTarget).tooltip('show');
+                setTimeout(function(){
+                    $(event.currentTarget).tooltip('hide');
+                },2500);
+            }
+		});
+		tableConvertBond.show(cnd);
+	}else{
+		tableConvertBond.reload(cnd);
+	}
+}
+
+var tableConvertBondDelisted = null;
+function showDelistedCB(){
+    if(!tableConvertBondDelisted){
+        tableConvertBondDelisted = new SimpleTableBuilder({
+            dataURL: '/data/cbnew/delisted/',
+            title:'已退市转债',
+            tid: 'flex_delisted',
+            cols:[
+                {display: '转债代码',     name : 'bond_id', width : 40, formatter: convertBondDetailLinkFormatter, nowrap : true, align: 'center'},
+                {display: '转债名称',     name : 'bond_nm', width : 60, nowrap : true,formatter: convertBondNameFormatter},
+                {display: '上市首日<br>收盘价格', name : 'first_price', width : 55, nowrap : true, align: 'right'},
+                {display: '最后交易日<br>收盘价格', name : 'price', width : 55, nowrap : true, align: 'right'},
+                {display: '最低<br>收盘价格',     name : 'min_price', width : 55, nowrap : true, tooltip:'{{min_dt}}', align: 'right'},
+                {display: '最高<br>收盘价格',     name : 'max_price', width : 55, nowrap : true, tooltip:'{{max_dt}}', align: 'right'},
+                {display: '正股代码',     name : 'stock_id', width : 55, nowrap : true, align: 'center',
+                    link: {
+                    url:'/data/stock/{{stock_id}}',
+                    newpage: true,
+                    type: self
+                    }
+                },
+                {display: '正股名称',     name : 'stock_nm', width : 60, tooltip:'代码：{{stock_id}}', nowrap : true},
+                {display: '发行规模<br>(亿元)',     name : 'orig_iss_amt', width : 55, nowrap : true, align: 'right'},
+                {display: '回售规模<br>(亿元)',     name : 'put_iss_amt', width : 55, nowrap : true, align: 'right'},
+                {display: '剩余规模<br>(亿元)',  title:'退市时剩余规模',   name : 'curr_iss_amt', width : 55, nowrap : true, align: 'right'},
+                {display: '发行日期',     name : 'issue_dt', width : 85, nowrap : true, align: 'center'},
+                {display: '上市日期',     name : 'first_dt', width : 85, nowrap : true, align: 'center'},
+                {display: '最后交易日',   name : 'delist_dt', width : 85, nowrap : true, align: 'center'},
+                {display: '到期日期',     name : 'maturity_dt', width : 85, nowrap : true, align: 'center'},
+                {display: '存续年限<br>(年)',     name : 'listed_years', width : 45, nowrap : true, align: 'right'},
+                {display: '退市原因',     name : 'delist_notes', width : 85, nowrap : true, align: 'center'},
+                {display: '最低价日',     name : 'min_dt', width : 85, hidden : true, align: 'center'},
+                {display: '最高价日',     name : 'max_dt', width : 85, hidden : true, align: 'center'}
+            ]
+        });
+        tableConvertBondDelisted.show();
+    }else{
+        tableConvertBondDelisted.reload();
+    }
+}
+
+var tableConvertBondAdjust = null;
+function showAdjust(){
+	var is_nearly = 0;
+    if($('#adjust_search_form_nearly').prop('checked')){
+        is_nearly = 1;
+    }
+    if(!tableConvertBondAdjust){
+        tableConvertBondAdjust = new SimpleTableBuilder({
+            dataURL: '/data/cbnew/adjust_list/',
+            afterShow: bondAdjCntTips,
+            title: '#tableConvertBondAdjustTitle',
+            tid: 'flex_adjust',
+            cols:[
+                {display: '转债<br>代码', name : 'bond_id', width : 40, formatter: convertBondDetailLinkFormatter, nowrap : true, align:'center'},
+                {display: '转债<br>名称', name : 'bond_nm', width : 50, nowrap : true,formatter: convertBondNameFormatter, align:'left'},
+				{display: '转债<br>现价', name:'price', title:'现价', width:50, nowrap:true, align:'right'},
+				{display: '正股<br>代码', name:'stock_id', width:50, hidden:true},
+				{display: '正股<br>名称', title:'正股名称', name : 'stock_nm', width : 50, tooltip:'代码：{{stock_id}}', nowrap : true, formatter:convertBondStockNMFormatter, align:'left'},
+				{display: '剩余<br>规模', name:'curr_iss_amt', width:50, nowrap:true, align:'right'},
+				{display: '转股价', name:'convert_price', width:50,nowrap:true, align:'right', formatter:adjustConvertPriceFormatter, sortValue:'convert_price', sorter:'numericSorter'},
+				{display: '转股<br>价值', name : 'convert_value', width : 40, nowrap : true, precision:2, align:'right'},
+				{display: '转股<br>溢价率', name : 'premium_rt', width : 40, nowrap : true, percentage:true, precision:2, maxLength:6, align:'right'},
+				{display: '下修<br>触发比', name:'adjust_price_ratio', width:30, nowrap:true, percentage:true, align:'right'},
+				{display: '下修<br>触发价', name:'threshold_value', width:50, nowrap:true, align:'right'},
+				{display: '正股价', name:'sprice', width:50, nowrap:true, align:'right'},
+				{display: '正股<br>PB', title:'正股市净率', name : 'pb', width : 35, nowrap : true, precision:2, maxLength:6, formatter:cbPBFormatter, align:'right'},
+				{display: '能否低于<br>净资产', name:'lt_bps', width:30, nowrap : true, align:'center', formatter:ltBpsFormatter},
+				{display: '下修天计数', name:'adjust_count', width:70, bgcolor:'yellow', nowrap:true, formatter:adjustCountFormatter, sortValue:'adjust_orders', sorter:'numericSorter', align:'center'},
+				{display: '下修重算<br>起始日', name:'readjust_dt', width:60, nowrap : true, align:'center', formatter:readjustDtFormatter},
+				{display: '下修条款', name:'adjust_tc', width:500}
+            ]
+        });
+        tableConvertBondAdjust.show({'nearly': is_nearly});
+    }else{
+        tableConvertBondAdjust.reload({'nearly': is_nearly});
+    }
+}
+function ltBpsFormatter(nameVal, row){
+	if('member' == row.lt_bps){
+		return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+	}else{
+		return row.lt_bps;
+	}
+}
+function readjustDtFormatter(nameVal, row){
+	if('member' == row.readjust_dt){
+		return '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+	}else{
+		return row.readjust_dt;
+	}
+}
+function adjustConvertPriceFormatter(nameVal, row){
+	var convert_price = row.convert_price;
+	if(row.adj_tips){
+		var adj_tips = row.adj_tips.replace(/S/g, '<span style="color:red;font-weight:bolder">*</span>').replace(/F/g, '<span style="color:green;font-weight:bolder">*</span>').replace(/R/g, '<span style="color:black;font-weight:bolder">*</span>');
+		convert_price = '<a class="adj_cnt_tips" adj_type="D" bond_nm="' + row.bond_nm + '" bond_id="' + row.bond_id + '">' + convert_price + ' ' + adj_tips + '</a> ';
+	}
+	return convert_price;
+}
+function adjustCountFormatter(nameVal, row){
+	var adjust_count = row.adjust_count;
+	if('member' == row.lt_bps){
+		adjust_count = '<a href="/setting/member/" title="会员数据，点击购买会员" target="_blank">会员</a>';
+	}else if(row.unadj_tips){
+		adjust_count = '<a class="adj_cnt_tips" adj_type="U" bond_nm="' + row.bond_nm + '" bond_id="' + row.bond_id + '">' + adjust_count + '</a>';
+	}
+	return adjust_count;
+}
+
+$(function(){
+    $.fn.multipleSelect.locales['zh-CN'] = {
+	    formatAllSelected: function formatAllSelected() {
+	      return '全部';
+	    }
+    };
+    $.extend($.fn.multipleSelect.defaults, $.fn.multipleSelect.locales['zh-CN']);
+
+    $('#rcds_select').multipleSelect({placeholder: "全部", "minimumCountSelected": 6});
+    //$('#rcds_select').multipleSelect('checkAll');
+
+	$('.datepicker').datepicker({
+        clearBtn: true,
+		autoclose: true,
+        toggleActive: true,
+        // todayHighlight: true,
+        //datesDisabled:[],
+		daysOfWeekDisabled: "0,6,7",
+		//daysOfWeekHighlighted: "1,2,3,4,5",
+        startDate: '2012-01-04',
+        endDate: new Date(new Date().getTime() - 24*60*60*1000).format('yyyy-MM-dd'),
+		language: 'zh-CN',
+		format: 'yyyy-mm-dd'
+	}).on('hide', function(e) {
+        var date = $('#historySearchInput').val();
+        if(isNaN(date)&&!isNaN(Date.parse(date))) {
+            window.open("/data/cbnew/snapshot/" + date.replace(/-/g,""));
+        }
+    });
+
+	$('#historySearchBtn').click(function(){
+		var date = $('#historySearchInput').val();
+        if(isNaN(date)&&!isNaN(Date.parse(date))) {
+            window.open("/data/cbnew/snapshot/" + date.replace(/-/g,""));
+        }
+	});
+
+	// bindAutoCheckbox();
+});
+
+show_cbindex_quote('.index_quote_info', true, true, '转债等权指数');
+
+$('#dataModal').modal({show:false});
+
+</script>
+<script type="text/javascript" src="/static/js/app/data_cb.js?v=20240910"></script>
+<div class="modal fade" id="dataModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h5 class="modal-title" id="dataModalLabel"></h5>
+			</div>
+			<div id="dataModalBody" class="modal-body">
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="footer_bg ">
+    <div class="footer_content">
+        <div class="flex">
+            <div class="footer_left">
+                <!-- 京ICP证160493号  京ICP备12044618号-1 -->
+                <div>
+                    <a style="text-decoration:none;color:#4d4d4d;" target="_blank" rel="noopener noreferrer" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010802031449">
+                        <img src="/static/img/beian.gov.cn.png"/> 京公网安备 11010802031449号
+                    </a>
+                </div>
+                <div>京ICP证160493号 <a style="text-decoration:none;color:#4d4d4d;" href="https://beian.miit.gov.cn" target="_blank" rel="noopener noreferrer">京ICP备12044618号-1</a></div>
+                <div>
+                    <a style="text-decoration:none;color:#4d4d4d;" href="/account/agreement/" target="_blank">用户协议</a><span class="separator">|</span>
+                    <a href="/account/private_agreement/" target="_blank">隐私政策</a><span class="separator">|</span>
+                    <a href="/question/48275" target="_blank">问题反馈</a>
+                </div>
+                <div>
+                    <!-- 联系电话：010-58481319 --> 客服邮箱：service@jisilu.com
+                </div>
+                <div>
+                    &copy;2012-2026 集思录版权所有
+                </div>
+                <div>
+                    使用
+                    <a href="https://www.microsoft.com/zh-cn/edge" rel="noopener noreferrer" target="_blank"><span class="jisilu-icons">&#xe9c0;</span>Edge</a>
+                    或
+                    <a href="https://www.google.cn/chrome/" rel="noopener noreferrer" target="_blank"><span class="jisilu-icons">&#xe9be;</span>Chrome</a>
+                    <!-- <a href="https://www.firefox.com.cn/" rel="noopener noreferrer" target="_blank"><span class="jisilu-icons">&#xe9bf;</span>Firefox</a> -->
+                    浏览本站最佳 (<a href="/tools/es6checker/" target="_blank">检查我的浏览器</a>)
+                </div>
+                <div class="statement">声明：本站所有收费以及免费的信息和数据仅供参考，不构成投资建议，集思录不承担由此导致的任何责任。</div>
+
+            </div>
+            <div class="footer_right">
+                <div>微信公众号<img src="/static/css/default/img/qrcode_public.png" /></div>
+                <div>APP下载<img src="/static/css/default/img/qrcode_app.png" /></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- DO NOT REMOVE -->
+<div id="aw-ajax-box" class="aw-ajax-box"></div>
+
+<div id="ajax_data" style="display:none"></div>
+<div style="display:none;" id="__crond">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#__crond').html(unescape('%3Cimg%20src%3D%22' + G_BASE_URL + '/crond/run/1777339801%22%20width%3D%221%22%20height%3D%221%22%20/%3E'));
+        });
+    </script>
+</div>
+<!-- / DO NOT REMOVE -->
+<!-- Escape time: 0.10438990592957 --><script type="text/javascript" id="bdshare_js" data="type=tools" ></script>
+<script type="text/javascript" src="/static/js/dc.js"></script>
+</body></html>
+```
+
+我要做一个过滤按钮，点击过滤按钮对列转债名称-"bond_nm"，做过滤处理。
+列名写的属性有：
+<span style="color:red;font-weight:bold;">!</span>
+或者
+<span style="color:#FFA500;font-weight:bold;">!</span>
+就把该行隐藏，
+
+然后记住该按钮的属性，如果按F5刷新页面，应该也要保持隐藏掉那些符合条件的行

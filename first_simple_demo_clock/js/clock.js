@@ -23,14 +23,14 @@ function displayClock(item, img_node, img_div) {
         item.innerHTML = m + " : " + s;
     }, 1000);
 
-    setTimeout(function () {
-        img_div.innerHTML = img_node.src
-    }, 5000);
+    // setTimeout(function () {
+    //     img_div.innerHTML = img_node.src
+    // }, 5000);
 
-    setTimeout(function () {
-        img_div.innerHTML = img_node.src;
-        console.log('change ');
-    }, 5000);
+    // setTimeout(function () {
+    //     img_div.innerHTML = img_node.src;
+    //     console.log('change ');
+    // }, 5000);
 }
 
 clock_div = document.getElementById('clock');

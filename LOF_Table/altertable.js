@@ -6,15 +6,19 @@ function Update() {
   let deleteRow = [];
   for (var i = 1; i < row.length; i++) {
     console.log(row[i].cells[4].textContent);
-    if (row[i].cells[5].textContent < 100) {
+    if (parseFloat(row[i].cells[4].textContent) < 100) {
     //   table.deleteRow(i);
-    // console.log("delete row");
+    console.log("delete row",i);
+    // console.log
     deleteRow.push(i);
+    // deleteRow.push(row[i].id);
     }
   }
-
-    for (var i = 0; i < deleteRow.length; i++) {
+  console.log(deleteRow.length);
+  console.log(deleteRow);
+    for (var i = deleteRow.length-1 ; i > 1; i--) {
         console.log(deleteRow[i])
+        // var row = document.getElementById(deleteRow[i]);
         table.deleteRow(deleteRow[i]);
     }
 }

@@ -15,6 +15,6 @@
             "38":"images/icon38.png"
         },
         "default_title":"My clock - http://30daydo.com",
-        "default_popup":"pop.html"
+        "default_popup":"pop_origin.html"
     }
 }

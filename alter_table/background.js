@@ -10,7 +10,8 @@ chrome.action.onClicked.addListener(async function (tab) {
 
 
   await chrome.scripting.executeScript({
-    files: ["altertable.js"],
+    files: ["lof_hide.js"],
+    // files: ["alterable.js"], // this is work
     target: { tabId: tab.id },
   }).then(() => console.log("injected script file"));
 }

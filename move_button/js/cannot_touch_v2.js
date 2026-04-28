@@ -14,6 +14,7 @@ function over_btn(e){
     if(!e){
         e = window.event;
     }
+    console.log("log");
     btn_move(this, e.clientX, e.clientY);
 }
 

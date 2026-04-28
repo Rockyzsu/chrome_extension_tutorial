@@ -3,7 +3,8 @@ function Geeks() {
     console.log('start to change table');    
     var table = document.getElementById('flex_cb');
     var row = table.rows; // Getting the rows
-    console.log(row.length);
+    console.log('jisilu',row.length);
+    console.log(row[1].cells)
     for (var i = 0; i < row[1].cells.length; i++) {
 
         // Getting the text of columnName
@@ -22,5 +23,6 @@ function Geeks() {
     }
 
 }
+
 
 Geeks();
