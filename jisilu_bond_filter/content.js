@@ -94,14 +94,21 @@
     if (!existingBtn1) {
       var btn1 = document.createElement('button');
       btn1.id = 'jisilu-filter-btn';
-      btn1.textContent = '过滤警示转债';
+      btn1.textContent = '移除强赎转债：关';
       btn1.style.cssText = 'margin-left: 20px; padding: 4px 12px; background-color: #d9534f; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;';
       btn1.onclick = function() {
-        hideWarningBonds();
-        document.getElementById('jisilu-nobuy-btn').textContent = '不强赎';
-        document.getElementById('jisilu-nobuy-btn').style.backgroundColor = '#d9534f';
-        btn1.textContent = '已过滤';
-        btn1.style.backgroundColor = '#5cb85c';
+        var isOn = btn1.textContent === '移除强赎转债：开';
+        if (isOn) {
+          showAllBonds();
+          btn1.textContent = '移除强赎转债：关';
+          btn1.style.backgroundColor = '#d9534f';
+        } else {
+          hideWarningBonds();
+          document.getElementById('jisilu-nobuy-btn').textContent = '显示不强赎：关';
+          document.getElementById('jisilu-nobuy-btn').style.backgroundColor = '#d9534f';
+          btn1.textContent = '移除强赎转债：开';
+          btn1.style.backgroundColor = '#5cb85c';
+        }
       };
 
       var container = document.querySelector('#topic_cb .clearfix .pull-left');
@@ -117,14 +124,21 @@
     if (!existingBtn2) {
       var btn2 = document.createElement('button');
       btn2.id = 'jisilu-nobuy-btn';
-      btn2.textContent = '不强赎';
+      btn2.textContent = '显示不强赎：关';
       btn2.style.cssText = 'margin-left: 10px; padding: 4px 12px; background-color: #d9534f; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 12px;';
       btn2.onclick = function() {
-        showNoRedeemBonds();
-        document.getElementById('jisilu-filter-btn').textContent = '过滤警示转债';
-        document.getElementById('jisilu-filter-btn').style.backgroundColor = '#d9534f';
-        btn2.textContent = '已筛选';
-        btn2.style.backgroundColor = '#5cb85c';
+        var isOn = btn2.textContent === '显示不强赎：开';
+        if (isOn) {
+          showAllBonds();
+          btn2.textContent = '显示不强赎：关';
+          btn2.style.backgroundColor = '#d9534f';
+        } else {
+          showNoRedeemBonds();
+          document.getElementById('jisilu-filter-btn').textContent = '移除强赎转债：关';
+          document.getElementById('jisilu-filter-btn').style.backgroundColor = '#d9534f';
+          btn2.textContent = '显示不强赎：开';
+          btn2.style.backgroundColor = '#5cb85c';
+        }
       };
 
       var container = document.querySelector('#topic_cb .clearfix .pull-left');
@@ -176,6 +190,21 @@
 
       if (warningBonds.length > 0) {
         saveHiddenBonds(warningBonds);
+      }
+    } catch(e) {}
+  }
+
+  function showAllBonds() {
+    try {
+      saveHiddenBonds([]);
+      saveShowBonds([]);
+      
+      var table = document.querySelector('#flex_cb');
+      if (!table) return;
+      
+      var allRows = table.querySelectorAll('tbody tr');
+      for (var i = 0; i < allRows.length; i++) {
+        allRows[i].style.display = '';
       }
     } catch(e) {}
   }

@@ -1,8 +1,18 @@
 {
   "manifest_version": 3,
   "name": "集思录可转债过滤器",
-  "version": "1.0",
-  "description": "过滤集思录可转债页面中含有警示标记的行",
+  "version": "1.1",
+  "description": "可转债强赎过滤",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [],
+  "host_permissions": [
+    "*://www.jisilu.cn/data/cbnew/*",
+    "*://www.jisilu.cn/web/data/cb/*"
+  ],
   "content_scripts": [
     {
       "matches": ["*://www.jisilu.cn/data/cbnew/*", "*://www.jisilu.cn/web/data/cb/*"],
