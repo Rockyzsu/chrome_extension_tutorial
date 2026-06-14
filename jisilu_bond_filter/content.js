@@ -1,7 +1,10 @@
 (function() {
   var STORAGE_KEY_HIDDEN = 'jisilu_bond_filter_hidden';
   var STORAGE_KEY_SHOW = 'jisilu_bond_filter_show';
+  var STORAGE_KEY_SINCREASE_A = 'jisilu_bond_filter_sincrease_a';
+  var STORAGE_KEY_SINCREASE_B = 'jisilu_bond_filter_sincrease_b';
   var BOND_NM_COLUMN = 1;
+  var SINCREASE_RT_COLUMN = 6;
   var isRunning = true;
 
   function getHiddenBonds() {
@@ -36,6 +39,24 @@
     } catch(e) {}
   }
 
+  function getSincreaseA() {
+    try { return localStorage.getItem(STORAGE_KEY_SINCREASE_A) || ''; } catch(e) {}
+    return '';
+  }
+
+  function getSincreaseB() {
+    try { return localStorage.getItem(STORAGE_KEY_SINCREASE_B) || ''; } catch(e) {}
+    return '';
+  }
+
+  function saveSincreaseA(val) {
+    try { localStorage.setItem(STORAGE_KEY_SINCREASE_A, val); } catch(e) {}
+  }
+
+  function saveSincreaseB(val) {
+    try { localStorage.setItem(STORAGE_KEY_SINCREASE_B, val); } catch(e) {}
+  }
+
   function restoreHiddenRows() {
     if (!isRunning) return;
     
@@ -67,6 +88,25 @@
         } else if (hiddenIds.length > 0) {
           if (hiddenIds.indexOf(bondId) !== -1) {
             row.style.display = 'none';
+          }
+        }
+
+        // Apply 正股涨跌幅 range filter if values are set
+        if (row.style.display !== 'none') {
+          var aStr = getSincreaseA();
+          var bStr = getSincreaseB();
+          if (aStr || bStr) {
+            var cell = cells[SINCREASE_RT_COLUMN];
+            if (cell) {
+              var text = cell.textContent.trim().replace('%', '');
+              var val = parseFloat(text);
+              if (isNaN(val)) {
+                row.style.display = 'none';
+              } else {
+                if (aStr && val < parseFloat(aStr)) row.style.display = 'none';
+                if (bStr && val > parseFloat(bStr)) row.style.display = 'none';
+              }
+            }
           }
         }
       }
@@ -148,6 +188,57 @@
         span2.appendChild(btn2);
         container.appendChild(span2);
       }
+    }
+  }
+
+  function createSincreaseFilter() {
+    var existingContainer = document.querySelector('#jisilu-sincrease-container');
+    if (!existingContainer) {
+      var container = document.querySelector('#topic_cb .clearfix .pull-left');
+      if (!container) return;
+
+      var wrapper = document.createElement('span');
+      wrapper.id = 'jisilu-sincrease-container';
+      wrapper.style.cssText = 'margin-left: 10px; background-color: #d9534f; padding: 2px 6px; border-radius: 3px;';
+
+      var label = document.createElement('span');
+      label.textContent = '正股涨跌';
+      label.style.cssText = 'font-size: 12px; margin-right: 3px; color: #fff;';
+
+      var inputA = document.createElement('input');
+      inputA.type = 'text';
+      inputA.id = 'jisilu-sincrease-a';
+      inputA.value = getSincreaseA();
+      inputA.style.cssText = 'width: 38px; height: 22px; font-size: 12px; text-align: right; padding: 0 2px; border: none; border-radius: 3px;';
+      inputA.placeholder = '';
+
+      var spanTo = document.createElement('span');
+      spanTo.textContent = '～';
+      spanTo.style.cssText = 'font-size: 12px; margin: 0 2px; color: #fff;';
+
+      var inputB = document.createElement('input');
+      inputB.type = 'text';
+      inputB.id = 'jisilu-sincrease-b';
+      inputB.value = getSincreaseB();
+      inputB.style.cssText = 'width: 38px; height: 22px; font-size: 12px; text-align: right; padding: 0 2px; border: none; border-radius: 3px;';
+      inputB.placeholder = '';
+
+      function applyFilter() {
+        var a = document.getElementById('jisilu-sincrease-a').value.trim();
+        var b = document.getElementById('jisilu-sincrease-b').value.trim();
+        saveSincreaseA(a);
+        saveSincreaseB(b);
+        restoreHiddenRows();
+      }
+
+      inputA.addEventListener('input', applyFilter);
+      inputB.addEventListener('input', applyFilter);
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(inputA);
+      wrapper.appendChild(spanTo);
+      wrapper.appendChild(inputB);
+      container.appendChild(wrapper);
     }
   }
 
@@ -396,6 +487,7 @@
       if (table && table.querySelector('tbody tr')) {
         clearInterval(timer);
         createFilterButtons();
+        createSincreaseFilter();
         createExportButton();
         createAutoRefreshButton();
         restoreHiddenRows();
