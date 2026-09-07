@@ -3,8 +3,12 @@
   var STORAGE_KEY_SHOW = 'jisilu_bond_filter_show';
   var STORAGE_KEY_SINCREASE_A = 'jisilu_bond_filter_sincrease_a';
   var STORAGE_KEY_SINCREASE_B = 'jisilu_bond_filter_sincrease_b';
+  var STORAGE_KEY_SCALE_A = 'jisilu_bond_filter_scale_a';
+  var STORAGE_KEY_VALUE_A = 'jisilu_bond_filter_value_a';
   var BOND_NM_COLUMN = 1;
   var SINCREASE_RT_COLUMN = 6;
+  var SCALE_COLUMN = null;
+  var VALUE_COLUMN = null;
   var isRunning = true;
 
   function getHiddenBonds() {
@@ -57,6 +61,45 @@
     try { localStorage.setItem(STORAGE_KEY_SINCREASE_B, val); } catch(e) {}
   }
 
+  function getScaleA() {
+    try { return localStorage.getItem(STORAGE_KEY_SCALE_A) || ''; } catch(e) {}
+    return '';
+  }
+
+  function saveScaleA(val) {
+    try { localStorage.setItem(STORAGE_KEY_SCALE_A, val); } catch(e) {}
+  }
+
+  function getValueA() {
+    try { return localStorage.getItem(STORAGE_KEY_VALUE_A) || ''; } catch(e) {}
+    return '';
+  }
+
+  function saveValueA(val) {
+    try { localStorage.setItem(STORAGE_KEY_VALUE_A, val); } catch(e) {}
+  }
+
+  function findColumnByHeader(name) {
+    var table = document.querySelector('#flex_cb');
+    if (!table) return -1;
+    var headerRows = table.querySelectorAll('thead tr');
+    var headerRow = null;
+    if (headerRows.length >= 2) {
+      headerRow = headerRows[1];
+    } else if (headerRows.length === 1) {
+      headerRow = headerRows[0];
+    }
+    if (!headerRow) return -1;
+    var headerCells = headerRow.querySelectorAll('th, td');
+    for (var i = 0; i < headerCells.length; i++) {
+      var text = headerCells[i].textContent.replace(/\s+/g, '').replace(/（.*）/g, '');
+      if (text.indexOf(name) !== -1) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   function restoreHiddenRows() {
     if (!isRunning) return;
     
@@ -105,6 +148,34 @@
               } else {
                 if (aStr && val < parseFloat(aStr)) row.style.display = 'none';
                 if (bStr && val > parseFloat(bStr)) row.style.display = 'none';
+              }
+            }
+          }
+        }
+
+        // Apply 剩余规模 > filter if value is set
+        if (row.style.display !== 'none') {
+          var scaleStr = getScaleA();
+          if (scaleStr) {
+            var scaleCell = cells[SCALE_COLUMN];
+            if (scaleCell) {
+              var scaleVal = parseFloat(scaleCell.textContent.trim());
+              if (isNaN(scaleVal) || scaleVal < parseFloat(scaleStr)) {
+                row.style.display = 'none';
+              }
+            }
+          }
+        }
+
+        // Apply 转股价值 > filter if value is set
+        if (row.style.display !== 'none') {
+          var valueStr = getValueA();
+          if (valueStr) {
+            var valueCell = cells[VALUE_COLUMN];
+            if (valueCell) {
+              var valueVal = parseFloat(valueCell.textContent.trim());
+              if (isNaN(valueVal) || valueVal > parseFloat(valueStr)) {
+                row.style.display = 'none';
               }
             }
           }
@@ -238,6 +309,76 @@
       wrapper.appendChild(inputA);
       wrapper.appendChild(spanTo);
       wrapper.appendChild(inputB);
+      container.appendChild(wrapper);
+    }
+  }
+
+  function createScaleFilter() {
+    var existingContainer = document.querySelector('#jisilu-scale-container');
+    if (!existingContainer) {
+      var container = document.querySelector('#topic_cb .clearfix .pull-left');
+      if (!container) return;
+
+      var wrapper = document.createElement('span');
+      wrapper.id = 'jisilu-scale-container';
+      wrapper.style.cssText = 'margin-left: 10px; background-color: #d9534f; padding: 2px 6px; border-radius: 3px;';
+
+      var label = document.createElement('span');
+      label.textContent = '剩余规模>';
+      label.style.cssText = 'font-size: 12px; margin-right: 3px; color: #fff;';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'jisilu-scale-a';
+      input.value = getScaleA();
+      input.style.cssText = 'width: 38px; height: 22px; font-size: 12px; text-align: right; padding: 0 2px; border: none; border-radius: 3px;';
+      input.placeholder = '亿元';
+
+      function applyFilter() {
+        var v = document.getElementById('jisilu-scale-a').value.trim();
+        saveScaleA(v);
+        restoreHiddenRows();
+      }
+
+      input.addEventListener('input', applyFilter);
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
+      container.appendChild(wrapper);
+    }
+  }
+
+  function createValueFilter() {
+    var existingContainer = document.querySelector('#jisilu-value-container');
+    if (!existingContainer) {
+      var container = document.querySelector('#topic_cb .clearfix .pull-left');
+      if (!container) return;
+
+      var wrapper = document.createElement('span');
+      wrapper.id = 'jisilu-value-container';
+      wrapper.style.cssText = 'margin-left: 10px; background-color: #d9534f; padding: 2px 6px; border-radius: 3px;';
+
+      var label = document.createElement('span');
+      label.textContent = '转股价值<';
+      label.style.cssText = 'font-size: 12px; margin-right: 3px; color: #fff;';
+
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'jisilu-value-a';
+      input.value = getValueA();
+      input.style.cssText = 'width: 38px; height: 22px; font-size: 12px; text-align: right; padding: 0 2px; border: none; border-radius: 3px;';
+      input.placeholder = '';
+
+      function applyFilter() {
+        var v = document.getElementById('jisilu-value-a').value.trim();
+        saveValueA(v);
+        restoreHiddenRows();
+      }
+
+      input.addEventListener('input', applyFilter);
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(input);
       container.appendChild(wrapper);
     }
   }
@@ -488,8 +629,12 @@
         clearInterval(timer);
         createFilterButtons();
         createSincreaseFilter();
+        createScaleFilter();
+        createValueFilter();
         createExportButton();
         createAutoRefreshButton();
+        SCALE_COLUMN = findColumnByHeader('剩余规模');
+        VALUE_COLUMN = findColumnByHeader('转股价值');
         restoreHiddenRows();
         startObserver();
       }
